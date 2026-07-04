@@ -1,41 +1,29 @@
-import { AXES, AXIS_LABEL, type Device, type WeightVector } from '../data/schema';
-import { normaliseWeights } from './scoring';
+import { AXES, AXIS_META, type Device, type WeightVector } from '../data/schema';
 
-/**
- * Format a price. Falls back to GBP but respects each device's own
- * `currency` so a mixed feed still displays sensibly.
- */
-export function formatPrice(price: number, currency = 'GBP'): string {
-  const locale = currency === 'GBP' ? 'en-GB' : currency === 'EUR' ? 'en-IE' : 'en-US';
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 0,
-  }).format(price);
-}
-
-export function formatEcosystem(eco: string): string {
-  if (eco === 'microsoft') return 'Windows';
-  if (eco === 'open') return 'Open';
-  return eco.charAt(0).toUpperCase() + eco.slice(1);
+export function formatGBP(n: number): string {
+  return `£${n.toLocaleString('en-GB')}`;
 }
 
 /**
- * Human-readable summary of *why* a device ranks where it does under
- * the current mixer. Picks the two highest contributing axes and the
- * one weakest contributing axis (weight × score product). No LLM —
- * this is a deterministic string per device+weight.
+ * Deterministic "why this rank" copy. Picks the top-2 contributing axes
+ * (weight × score) and the weakest contributor. No LLM, no randomness.
  */
-export function explainRank(device: Device, weights: WeightVector): string {
-  const w = normaliseWeights(weights);
-  const contributions = AXES.map((a) => ({
-    axis: a,
-    contribution: w[a] * device.scores[a],
-  })).sort((a, b) => b.contribution - a.contribution);
+export function explainRank(d: Device, w: WeightVector, rank: number): string {
+  const totalW = AXES.reduce((s, a) => s + w[a], 0) || 1;
+  const contribs = AXES.map((a) => ({
+    a,
+    c: (d[a] * w[a]) / totalW,
+  })).sort((x, y) => y.c - x.c);
 
-  const strong = contributions.slice(0, 2).map((c) => AXIS_LABEL[c.axis].toLowerCase());
-  const weak = contributions[contributions.length - 1];
-  const weakLabel = weak ? AXIS_LABEL[weak.axis].toLowerCase() : 'value';
-
-  return `${device.name} leads your board mainly on ${strong[0]} and ${strong[1]}. Its weakest contribution under your current mix is ${weakLabel}.`;
+  const top = contribs
+    .slice(0, 2)
+    .map((x) => AXIS_META.find((m) => m.key === x.a)!.full.toLowerCase());
+  const weak = AXIS_META.find((m) => m.key === contribs[contribs.length - 1]!.a)!.full.toLowerCase();
+  const rankWord =
+    rank === 1
+      ? 'leads your board'
+      : rank > 1
+        ? `ranks #${rank} at your weights`
+        : 'is outside your current filters';
+  return `The ${d.name} ${rankWord} mainly on ${top[0]} and ${top[1]}. Its weakest contribution under your current mix is ${weak}.`;
 }

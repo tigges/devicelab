@@ -1,38 +1,40 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { DEVICES } from '../../data/devices';
+import { DEVICES, slugify } from '../../data/devices';
 import { PRESETS } from '../../data/presets';
-import { AXES, AXIS_LABEL } from '../../data/schema';
-import { formatEcosystem, formatPrice } from '../../lib/format';
+import { AXIS_META } from '../../data/schema';
+import { LINES } from '../../data/lines';
+import { amazonUrl, mfgUrl } from '../../data/merchants';
+import { formatGBP } from '../../lib/format';
 import { rankDevices } from '../../lib/scoring';
+import { personaById } from '../../data/personas';
 import { TrackPriceForm } from '../../components/TrackPriceForm';
 import { href } from '../../lib/href';
 
 export function getStaticPaths() {
   return DEVICES.map((device) => ({
-    params: { slug: device.id },
+    params: { slug: slugify(device) },
     props: { device },
   }));
 }
 
 const { device } = Astro.props as { device: import('../../data/schema').Device };
-
-const peers = DEVICES.filter((d) => d.category === device.category);
-const ranking = rankDevices(peers, {}).find((r) => r.device.id === device.id);
-const relatedPresets = PRESETS.filter(
-  (p) => p.category === device.category || p.category === 'all',
-);
+const overall = personaById('Overall')!;
+const peers = DEVICES.filter((d) => d.cat === device.cat);
+const ranking = rankDevices(peers, overall.weights).find((r) => r.device.id === device.id);
+const lineMeta = device.line ? LINES[device.brand]?.[device.line] : undefined;
+const relatedPresets = PRESETS.filter((p) => p.category === device.cat || p.category === 'All');
+const mfg = mfgUrl(device);
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: device.name,
   brand: { '@type': 'Brand', name: device.brand },
-  category: device.category,
-  description: device.summary,
+  category: device.cat,
   offers: {
     '@type': 'Offer',
-    priceCurrency: device.currency,
+    priceCurrency: 'GBP',
     price: device.price,
     availability: 'https://schema.org/InStock',
     url: new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString(),
@@ -41,129 +43,90 @@ const jsonLd = {
 ---
 
 <Base
-  title={`${device.name} — Scores, price, and rank | DeviceLab`}
-  description={`${device.tagline} ${device.summary}`.slice(0, 180)}
+  title={`${device.name} — DeviceLab`}
+  description={`${device.brand} ${device.line ? '· ' + device.line : ''} · ${device.cat}. Scored on 6 axes, ranked against ${peers.length - 1} peers.`}
   jsonLd={jsonLd}
 >
-  <section class="container page-header">
-    <div class="eyebrow">
-      {device.category.toUpperCase()} / {device.brand.toUpperCase()} · {device.line.toUpperCase()}
+  <section class="dl-page-header">
+    <div class="dl-eyebrow-hero">
+      {device.cat.toUpperCase()} / {device.brand.toUpperCase()}
+      {device.line && ` · ${device.line.toUpperCase()}`}
     </div>
     <h1>{device.name}</h1>
-    <p class="blurb">{device.tagline}</p>
-
-    <div class="device-meta-grid" style="margin-top: 22px;">
-      <div class="cell">
-        <div class="k">Composite (equal wts)</div>
-        <div class="v">{ranking?.score.toFixed(1) ?? '—'}</div>
-      </div>
-      <div class="cell">
-        <div class="k">Category rank</div>
-        <div class="v">#{ranking?.rank ?? '—'} of {peers.length}</div>
-      </div>
-      <div class="cell">
-        <div class="k">Ecosystem</div>
-        <div class="v">{formatEcosystem(device.ecosystem)}</div>
-      </div>
-      <div class="cell">
-        <div class="k">Typical price</div>
-        <div class="v">{formatPrice(device.price, device.currency)}</div>
-      </div>
-      <div class="cell">
-        <div class="k">Released</div>
-        <div class="v">{device.releaseYear}</div>
-      </div>
-    </div>
+    {lineMeta && (
+      <p class="dl-blurb"><strong>{device.line}:</strong> {lineMeta.desc}</p>
+    )}
   </section>
 
-  <section class="container" style="padding: 24px 0;">
-    <h2>Axis scores</h2>
-    <div class="axis-grid">
-      {AXES.map((axis) => (
-        <div class="axis-row">
-          <div class="label">{AXIS_LABEL[axis]}</div>
-          <div class="bar">
-            <span style={`width: ${device.scores[axis]}%`}></span>
-          </div>
-          <div class="val">{device.scores[axis]}</div>
+  <div class="dl-device-meta">
+    <div>
+      <div class="k">Composite (equal wts)</div>
+      <div class="v">{ranking?.score.toFixed(1) ?? '—'}</div>
+    </div>
+    <div>
+      <div class="k">Category rank</div>
+      <div class="v">#{ranking?.rank ?? '—'} of {peers.length}</div>
+    </div>
+    <div>
+      <div class="k">Ecosystem</div>
+      <div class="v">{device.eco}</div>
+    </div>
+    <div>
+      <div class="k">Typical price</div>
+      <div class="v">{formatGBP(device.price)}</div>
+    </div>
+  </div>
+
+  <section class="dl-container" style="padding: 20px 16px 8px;">
+    <h2 style="margin-bottom: 6px;">Axis scores</h2>
+    <div class="dl-axis-list" style="padding: 8px 0;">
+      {AXIS_META.map((a) => (
+        <div class="dl-axis-row">
+          <div class="label">{a.full}</div>
+          <div class="bar"><span style={`width: ${device[a.key]}%`}></span></div>
+          <div class="val">{device[a.key]}</div>
         </div>
       ))}
     </div>
-    <p style="color: var(--ink-2); max-width: 62ch;">{device.summary}</p>
   </section>
 
-  <section class="container" style="padding: 24px 0;">
-    <h2>Track price</h2>
-    <p style="color: var(--ink-3); margin: 6px 0 12px; font-size: 14px;">
-      Get a one-time email when this device hits your target. No newsletter.
+  <section class="dl-container" style="padding: 8px 16px 20px;">
+    <h2 style="margin-bottom: 8px;">Where to buy</h2>
+    <div class="dl-buy">
+      <a class="dl-buy-btn dl-buy-btn--primary" href={amazonUrl(device)} rel="sponsored noopener" target="_blank">
+        Amazon UK →
+      </a>
+      {mfg && (
+        <a class="dl-buy-btn dl-buy-btn--ghost" href={mfg} rel="sponsored noopener" target="_blank">
+          {device.brand} store →
+        </a>
+      )}
+    </div>
+    <p class="dl-disclosure">
+      ↗ Retail links may earn us a commission. This never affects scores or ranking — offers are sorted by price only.
     </p>
-    <TrackPriceForm client:idle deviceId={device.id} />
   </section>
 
-  {device.offers.length > 0 && (
-    <section class="container" style="padding: 24px 0;">
-      <h2>Offers</h2>
-      <p class="mono" style="color: var(--ink-3); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;">
-        Retail links may earn us a commission. Never affects ranking.
-      </p>
-      <ul style="list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px;">
-        {device.offers.map((o) => (
-          <li>
-            <a
-              href={o.url}
-              rel="sponsored noopener"
-              target="_blank"
-              class="pair-row"
-              style="display: flex; text-decoration: none;"
-            >
-              <div>
-                <strong>{o.merchant}</strong>
-                <div class="pair-reason">
-                  {o.price ? formatPrice(o.price, o.currency) : 'Live price loading — via retailer'}
-                </div>
-              </div>
-              <span class="btn-ghost-small">Visit →</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
-
-  {device.pairs.length > 0 && (
-    <section class="container" style="padding: 24px 0;">
-      <h2>Pairs well with</h2>
-      <ul class="pairs-list" style="margin-top: 12px;">
-        {device.pairs.map((p) => {
-          const paired = DEVICES.find((d) => d.id === p.deviceId);
-          if (!paired) return null;
-          return (
-            <li>
-              <div class="pair-row">
-                <div>
-                  <strong>
-                    <a href={href(`/device/${paired.id}`)}>{paired.name}</a>
-                  </strong>
-                  <div class="pair-reason">{p.reason}</div>
-                </div>
-                <a href={href(`/device/${paired.id}`)} class="btn-ghost-small">Open →</a>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  )}
-
-  <section class="container" style="padding: 24px 0 60px;">
-    <h2>See it ranked</h2>
-    <p style="color: var(--ink-3); margin: 6px 0 12px; font-size: 14px;">
-      This device appears in these rankings — click through to see it in
-      context under a specific weight mix.
+  <section class="dl-container" style="padding: 8px 16px 20px;">
+    <h2 style="margin-bottom: 8px;">Track price</h2>
+    <p style="color: #5F6368; margin: 4px 0 12px; font-size: 13px;">
+      Get one email when this device hits your target. No newsletter.
     </p>
-    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+    <TrackPriceForm client:idle deviceId={String(device.id)} />
+  </section>
+
+  <section class="dl-container" style="padding: 8px 16px 20px;">
+    <h2 style="margin-bottom: 8px;">Pairs well with</h2>
+    <div class="dl-pairs">
+      {device.pairs.map((pr) => <div class="dl-pair-card">{pr}</div>)}
+    </div>
+  </section>
+
+  <section class="dl-container" style="padding: 8px 16px 60px;">
+    <h2 style="margin-bottom: 8px;">See it ranked</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
       {relatedPresets.map((p) => (
-        <a href={href(`/${p.slug}`)} class="persona-chip">{p.title}</a>
+        <a href={href(`/${p.slug}`)} class="dl-chip">{p.title}</a>
       ))}
     </div>
   </section>

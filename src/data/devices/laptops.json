@@ -1,337 +1,67 @@
 [
-  {
-    "id": "macbook-pro-14-m4-pro",
-    "name": "MacBook Pro 14\" (M4 Pro)",
-    "brand": "Apple",
-    "line": "MacBook Pro",
-    "category": "laptops",
-    "ecosystem": "apple",
-    "gtin": null,
-    "releaseYear": 2024,
-    "scores": {
-      "performance": 94,
-      "portability": 78,
-      "display": 96,
-      "battery": 88,
-      "build": 95,
-      "value": 55
-    },
-    "price": 1999,
-    "currency": "GBP",
-    "priceHistory": [],
-    "offers": [
-      {
-        "merchant": "Amazon UK",
-        "merchantSlug": "amazon-uk",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.amazon.co.uk/s?k=MacBook+Pro+14+M4+Pro",
-        "inStock": true,
-        "updatedAt": ""
-      },
-      {
-        "merchant": "Apple Store",
-        "merchantSlug": "apple-store",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.apple.com/uk/shop/buy-mac/macbook-pro",
-        "inStock": true,
-        "updatedAt": ""
-      }
-    ],
-    "pairs": [
-      { "deviceId": "iphone-16-pro", "reason": "Handoff, AirDrop, Universal Clipboard" }
-    ],
-    "tagline": "Silent workstation in a 14\" chassis.",
-    "linePitch": "MacBook Pro: Creator & pro flagship: top performance, best-in-class displays.",
-    "summary": "M4 Pro delivers desktop-class performance while sipping power; the mini-LED XDR display and 22h battery make it the default for pro creators inside Apple's ecosystem."
-  },
-  {
-    "id": "macbook-air-13-m3",
-    "name": "MacBook Air 13\" (M3)",
-    "brand": "Apple",
-    "line": "MacBook Air",
-    "category": "laptops",
-    "ecosystem": "apple",
-    "gtin": null,
-    "releaseYear": 2024,
-    "scores": {
-      "performance": 78,
-      "portability": 94,
-      "display": 82,
-      "battery": 90,
-      "build": 90,
-      "value": 78
-    },
-    "price": 1099,
-    "currency": "GBP",
-    "priceHistory": [],
-    "offers": [
-      {
-        "merchant": "Amazon UK",
-        "merchantSlug": "amazon-uk",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.amazon.co.uk/s?k=MacBook+Air+13+M3",
-        "inStock": true,
-        "updatedAt": ""
-      },
-      {
-        "merchant": "Apple Store",
-        "merchantSlug": "apple-store",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.apple.com/uk/shop/buy-mac/macbook-air",
-        "inStock": true,
-        "updatedAt": ""
-      }
-    ],
-    "pairs": [],
-    "tagline": "Fanless all-day carry.",
-    "linePitch": "MacBook Air: The default student & carry-everywhere laptop.",
-    "summary": "The best fanless laptop money can buy. Excellent for students and writers; the M3 gives it enough headroom for light Xcode and Lightroom."
-  },
-  {
-    "id": "dell-xps-13-9350",
-    "name": "Dell XPS 13 (9350)",
-    "brand": "Dell",
-    "line": "XPS",
-    "category": "laptops",
-    "ecosystem": "microsoft",
-    "gtin": null,
-    "releaseYear": 2024,
-    "scores": {
-      "performance": 80,
-      "portability": 92,
-      "display": 86,
-      "battery": 80,
-      "build": 88,
-      "value": 68
-    },
-    "price": 1299,
-    "currency": "GBP",
-    "priceHistory": [],
-    "offers": [
-      {
-        "merchant": "Amazon UK",
-        "merchantSlug": "amazon-uk",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.amazon.co.uk/s?k=Dell+XPS+13+9350",
-        "inStock": true,
-        "updatedAt": ""
-      },
-      {
-        "merchant": "Dell UK",
-        "merchantSlug": "dell-uk",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.dell.com/en-uk/shop/laptops/xps-13/spd/xps-13-9350-laptop",
-        "inStock": true,
-        "updatedAt": ""
-      }
-    ],
-    "pairs": [],
-    "tagline": "Snapdragon X ultraportable.",
-    "linePitch": "XPS: Windows ultraportable with premium build and OLED options.",
-    "summary": "Copilot+ Arm laptop with strong battery, sharp OLED option, and a tight aluminum shell. App compatibility caveats vs. x86 still apply."
-  },
-  {
-    "id": "lenovo-thinkpad-x1-carbon-g12",
-    "name": "ThinkPad X1 Carbon (Gen 12)",
-    "brand": "Lenovo",
-    "line": "ThinkPad",
-    "category": "laptops",
-    "ecosystem": "microsoft",
-    "gtin": null,
-    "releaseYear": 2024,
-    "scores": {
-      "performance": 76,
-      "portability": 90,
-      "display": 84,
-      "battery": 78,
-      "build": 92,
-      "value": 62
-    },
-    "price": 1749,
-    "currency": "GBP",
-    "priceHistory": [],
-    "offers": [
-      {
-        "merchant": "Lenovo UK",
-        "merchantSlug": "lenovo-uk",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.lenovo.com/gb/en/p/laptops/thinkpad/thinkpadx1/thinkpad-x1-carbon-gen-12",
-        "inStock": true,
-        "updatedAt": ""
-      },
-      {
-        "merchant": "Amazon UK",
-        "merchantSlug": "amazon-uk",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.amazon.co.uk/s?k=ThinkPad+X1+Carbon+Gen+12",
-        "inStock": true,
-        "updatedAt": ""
-      }
-    ],
-    "pairs": [],
-    "tagline": "Business classic, still the reference keyboard.",
-    "linePitch": "ThinkPad X1 Carbon: Business flagship with the reference keyboard.",
-    "summary": "Meteor Lake, magnesium chassis, MIL-STD build, and the keyboard people leave other laptops for. Business-first ergonomics."
-  },
-  {
-    "id": "framework-laptop-13-ryzen",
-    "name": "Framework Laptop 13 (Ryzen AI 300)",
-    "brand": "Framework",
-    "line": "Laptop 13",
-    "category": "laptops",
-    "ecosystem": "open",
-    "gtin": null,
-    "releaseYear": 2024,
-    "scores": {
-      "performance": 78,
-      "portability": 84,
-      "display": 80,
-      "battery": 72,
-      "build": 78,
-      "value": 84
-    },
-    "price": 1099,
-    "currency": "GBP",
-    "priceHistory": [],
-    "offers": [
-      {
-        "merchant": "Framework",
-        "merchantSlug": "framework",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://frame.work/gb/en/laptop13",
-        "inStock": true,
-        "updatedAt": ""
-      }
-    ],
-    "pairs": [],
-    "tagline": "Repairable, upgradeable, socketed everything.",
-    "linePitch": "Framework 13: The only mainstream repairable laptop.",
-    "summary": "The only mainstream laptop where the mainboard, ports, keyboard, and battery are user-serviceable. Small ecosystem, large longevity."
-  },
-  {
-    "id": "asus-zenbook-s16-oled",
-    "name": "ASUS Zenbook S16 OLED",
-    "brand": "ASUS",
-    "line": "Zenbook",
-    "category": "laptops",
-    "ecosystem": "microsoft",
-    "gtin": null,
-    "releaseYear": 2024,
-    "scores": {
-      "performance": 82,
-      "portability": 80,
-      "display": 92,
-      "battery": 76,
-      "build": 82,
-      "value": 74
-    },
-    "price": 1499,
-    "currency": "GBP",
-    "priceHistory": [],
-    "offers": [
-      {
-        "merchant": "Amazon UK",
-        "merchantSlug": "amazon-uk",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.amazon.co.uk/s?k=ASUS+Zenbook+S16+OLED",
-        "inStock": true,
-        "updatedAt": ""
-      }
-    ],
-    "pairs": [],
-    "tagline": "OLED-first thin-and-light.",
-    "linePitch": "Zenbook S16: Big-screen OLED thin-and-light with Ryzen AI.",
-    "summary": "Ryzen AI 9 HX 370 in a 1.5 kg chassis with a 3K OLED — the best display in this bracket by a clear margin."
-  },
-  {
-    "id": "razer-blade-16-2024",
-    "name": "Razer Blade 16 (2024)",
-    "brand": "Razer",
-    "line": "Blade",
-    "category": "laptops",
-    "ecosystem": "microsoft",
-    "gtin": null,
-    "releaseYear": 2024,
-    "scores": {
-      "performance": 96,
-      "portability": 60,
-      "display": 94,
-      "battery": 56,
-      "build": 88,
-      "value": 42
-    },
-    "price": 2999,
-    "currency": "GBP",
-    "priceHistory": [],
-    "offers": [
-      {
-        "merchant": "Razer",
-        "merchantSlug": "razer",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.razer.com/gaming-laptops/razer-blade-16",
-        "inStock": true,
-        "updatedAt": ""
-      },
-      {
-        "merchant": "Amazon UK",
-        "merchantSlug": "amazon-uk",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.amazon.co.uk/s?k=Razer+Blade+16+2024",
-        "inStock": true,
-        "updatedAt": ""
-      }
-    ],
-    "pairs": [],
-    "tagline": "Desktop replacement that still looks like a work machine.",
-    "linePitch": "Blade 16: Flagship portable gaming and 3D work.",
-    "summary": "RTX 4090 mobile, dual-mode OLED, and CNC aluminum. Loud under load; the ceiling for portable gaming and 3D work."
-  },
-  {
-    "id": "acer-swift-go-14",
-    "name": "Acer Swift Go 14",
-    "brand": "Acer",
-    "line": "Swift",
-    "category": "laptops",
-    "ecosystem": "microsoft",
-    "gtin": null,
-    "releaseYear": 2024,
-    "scores": {
-      "performance": 70,
-      "portability": 86,
-      "display": 78,
-      "battery": 74,
-      "build": 72,
-      "value": 88
-    },
-    "price": 799,
-    "currency": "GBP",
-    "priceHistory": [],
-    "offers": [
-      {
-        "merchant": "Amazon UK",
-        "merchantSlug": "amazon-uk",
-        "price": null,
-        "currency": "GBP",
-        "url": "https://www.amazon.co.uk/s?k=Acer+Swift+Go+14",
-        "inStock": true,
-        "updatedAt": ""
-      }
-    ],
-    "pairs": [],
-    "tagline": "Cheap OLED, few compromises.",
-    "linePitch": "Swift Go: Sub-£800 with a real OLED panel.",
-    "summary": "Sub-£800 with an OLED panel and Core Ultra 5. Plastic-heavy but the display and CPU make it a compelling student pick."
-  }
+  { "name": "ThinkPad X1 Carbon Gen 13", "brand": "Lenovo", "line": "ThinkPad", "eco": "Windows", "cat": "Laptop", "price": 1649, "drop": 250, "perf": 76, "port": 92, "disp": 82, "batt": 80, "build": 92 },
+  { "name": "ThinkPad T14s Gen 6",       "brand": "Lenovo", "line": "ThinkPad", "eco": "Windows", "cat": "Laptop", "price": 1249, "drop": 150, "perf": 74, "port": 88, "disp": 78, "batt": 88, "build": 90 },
+  { "name": "ThinkPad P1 Gen 7",         "brand": "Lenovo", "line": "ThinkPad", "eco": "Windows", "cat": "Laptop", "price": 2199, "drop": 200, "perf": 90, "port": 70, "disp": 88, "batt": 62, "build": 90 },
+  { "name": "ThinkPad E14 Gen 6",        "brand": "Lenovo", "line": "ThinkPad", "eco": "Windows", "cat": "Laptop", "price": 749,  "drop": 100, "perf": 62, "port": 80, "disp": 68, "batt": 76, "build": 80 },
+  { "name": "ThinkBook 14 2-in-1 Gen 6", "brand": "Lenovo", "line": "ThinkBook", "eco": "Windows", "cat": "Laptop", "price": 899,  "drop": 100, "perf": 68, "port": 84, "disp": 76, "batt": 80, "build": 78 },
+  { "name": "ThinkBook 16 Gen 8",        "brand": "Lenovo", "line": "ThinkBook", "eco": "Windows", "cat": "Laptop", "price": 999,  "drop": 120, "perf": 72, "port": 68, "disp": 78, "batt": 78, "build": 78 },
+  { "name": "Yoga 9i 2-in-1 Aura Gen 11", "brand": "Lenovo", "line": "Yoga", "eco": "Windows", "cat": "Laptop", "price": 1799, "drop": 0,   "perf": 78, "port": 84, "disp": 94, "batt": 84, "build": 90 },
+  { "name": "Yoga Slim 7i Aura Gen 11",   "brand": "Lenovo", "line": "Yoga", "eco": "Windows", "cat": "Laptop", "price": 1199, "drop": 100, "perf": 74, "port": 94, "disp": 84, "batt": 90, "build": 86 },
+  { "name": "Yoga Slim 7x Gen 11 (X2)",   "brand": "Lenovo", "line": "Yoga", "eco": "Windows", "cat": "Laptop", "price": 1099, "drop": 50,  "perf": 76, "port": 92, "disp": 88, "batt": 94, "build": 84 },
+  { "name": "Yoga Pro 9i Gen 10",         "brand": "Lenovo", "line": "Yoga", "eco": "Windows", "cat": "Laptop", "price": 2099, "drop": 200, "perf": 92, "port": 66, "disp": 96, "batt": 70, "build": 88 },
+  { "name": "Yoga Pro 7a Gen 11",         "brand": "Lenovo", "line": "Yoga", "eco": "Windows", "cat": "Laptop", "price": 1699, "drop": 0,   "perf": 90, "port": 74, "disp": 92, "batt": 76, "build": 86 },
+  { "name": "IdeaPad Slim 5i Ultra Gen 11", "brand": "Lenovo", "line": "IdeaPad", "eco": "Windows", "cat": "Laptop", "price": 899, "drop": 0,   "perf": 70, "port": 88, "disp": 82, "batt": 92, "build": 76 },
+  { "name": "IdeaPad Slim 3i 17 Gen 11",    "brand": "Lenovo", "line": "IdeaPad", "eco": "Windows", "cat": "Laptop", "price": 799, "drop": 0,   "perf": 60, "port": 62, "disp": 66, "batt": 82, "build": 70 },
+  { "name": "IdeaPad Slim 3x",              "brand": "Lenovo", "line": "IdeaPad", "eco": "Windows", "cat": "Laptop", "price": 549, "drop": 80,  "perf": 58, "port": 86, "disp": 64, "batt": 90, "build": 68 },
+  { "name": "Legion 7a Gen 11",     "brand": "Lenovo", "line": "Legion", "eco": "Windows", "cat": "Laptop", "price": 2199, "drop": 0,   "perf": 96, "port": 72, "disp": 94, "batt": 60, "build": 84 },
+  { "name": "Legion Pro 7i Gen 10", "brand": "Lenovo", "line": "Legion", "eco": "Windows", "cat": "Laptop", "price": 2599, "drop": 300, "perf": 99, "port": 40, "disp": 92, "batt": 45, "build": 84 },
+  { "name": "Legion 5 Gen 10",      "brand": "Lenovo", "line": "Legion", "eco": "Windows", "cat": "Laptop", "price": 1399, "drop": 150, "perf": 88, "port": 55, "disp": 84, "batt": 55, "build": 78 },
+  { "name": "LOQ 15 (2026)",        "brand": "Lenovo", "line": "Legion", "eco": "Windows", "cat": "Laptop", "price": 899,  "drop": 100, "perf": 80, "port": 50, "disp": 72, "batt": 50, "build": 70 },
+
+  { "name": "MacBook Pro 14 (M4 Pro)", "brand": "Apple", "line": "MacBook Pro", "eco": "Apple", "cat": "Laptop", "price": 1999, "drop": 100, "perf": 94, "port": 78, "disp": 96, "batt": 90, "build": 95 },
+  { "name": "MacBook Air 13 (M5)",     "brand": "Apple", "line": "MacBook Air", "eco": "Apple", "cat": "Laptop", "price": 1099, "drop": 100, "perf": 80, "port": 95, "disp": 84, "batt": 92, "build": 90 },
+  { "name": "MacBook Neo",             "brand": "Apple", "line": "MacBook Neo", "eco": "Apple", "cat": "Laptop", "price": 599,  "drop": 0,   "perf": 68, "port": 94, "disp": 76, "batt": 88, "build": 86 },
+
+  { "name": "XPS 14",            "brand": "Dell", "line": "XPS",       "eco": "Windows", "cat": "Laptop", "price": 1499, "drop": 200, "perf": 80, "port": 84, "disp": 90, "batt": 74, "build": 88 },
+  { "name": "XPS 16 (2026)",     "brand": "Dell", "line": "XPS",       "eco": "Windows", "cat": "Laptop", "price": 1899, "drop": 100, "perf": 88, "port": 70, "disp": 94, "batt": 70, "build": 88 },
+  { "name": "Inspiron 14 Plus",  "brand": "Dell", "line": "Inspiron",  "eco": "Windows", "cat": "Laptop", "price": 749,  "drop": 100, "perf": 64, "port": 82, "disp": 72, "batt": 84, "build": 70 },
+  { "name": "Alienware 16 Aurora", "brand": "Dell", "line": "Alienware", "eco": "Windows", "cat": "Laptop", "price": 1699, "drop": 200, "perf": 93, "port": 45, "disp": 88, "batt": 48, "build": 78 },
+  { "name": "Dell Pro 14 Premium", "brand": "Dell", "line": "Dell Pro",  "eco": "Windows", "cat": "Laptop", "price": 1449, "drop": 150, "perf": 74, "port": 90, "disp": 80, "batt": 86, "build": 88 },
+
+  { "name": "OmniBook X 14",       "brand": "HP", "line": "OmniBook",  "eco": "Windows", "cat": "Laptop", "price": 999,  "drop": 150, "perf": 70, "port": 92, "disp": 82, "batt": 94, "build": 82 },
+  { "name": "EliteBook Ultra G2",  "brand": "HP", "line": "EliteBook", "eco": "Windows", "cat": "Laptop", "price": 1649, "drop": 150, "perf": 76, "port": 90, "disp": 84, "batt": 88, "build": 90 },
+  { "name": "Omen Max 16",         "brand": "HP", "line": "Omen",      "eco": "Windows", "cat": "Laptop", "price": 1999, "drop": 200, "perf": 94, "port": 40, "disp": 90, "batt": 45, "build": 80 },
+  { "name": "Victus 15",           "brand": "HP", "line": "Victus",    "eco": "Windows", "cat": "Laptop", "price": 799,  "drop": 100, "perf": 74, "port": 48, "disp": 68, "batt": 50, "build": 66 },
+
+  { "name": "ROG Zephyrus G14",  "brand": "ASUS", "line": "ROG",      "eco": "Windows", "cat": "Laptop", "price": 1799, "drop": 200, "perf": 92, "port": 74, "disp": 92, "batt": 62, "build": 84 },
+  { "name": "ROG Strix Scar 18", "brand": "ASUS", "line": "ROG",      "eco": "Windows", "cat": "Laptop", "price": 2899, "drop": 300, "perf": 99, "port": 25, "disp": 94, "batt": 35, "build": 80 },
+  { "name": "Zenbook S14",       "brand": "ASUS", "line": "Zenbook",  "eco": "Windows", "cat": "Laptop", "price": 1199, "drop": 150, "perf": 74, "port": 94, "disp": 90, "batt": 90, "build": 88 },
+  { "name": "Vivobook S15",      "brand": "ASUS", "line": "Vivobook", "eco": "Windows", "cat": "Laptop", "price": 849,  "drop": 100, "perf": 68, "port": 80, "disp": 82, "batt": 86, "build": 72 },
+  { "name": "ProArt P16",        "brand": "ASUS", "line": "ProArt",   "eco": "Windows", "cat": "Laptop", "price": 2199, "drop": 200, "perf": 92, "port": 62, "disp": 96, "batt": 68, "build": 84 },
+  { "name": "TUF Gaming A16",    "brand": "ASUS", "line": "TUF",      "eco": "Windows", "cat": "Laptop", "price": 1099, "drop": 150, "perf": 84, "port": 44, "disp": 76, "batt": 52, "build": 76 },
+
+  { "name": "Galaxy Book 6 Pro",   "brand": "Samsung", "line": "Galaxy Book", "eco": "Windows", "cat": "Laptop", "price": 1349, "drop": 100, "perf": 76, "port": 90, "disp": 92, "batt": 86, "build": 84 },
+
+  { "name": "Surface Laptop 7", "brand": "Microsoft", "line": "Surface Laptop", "eco": "Windows", "cat": "Laptop", "price": 1049, "drop": 150, "perf": 72, "port": 90, "disp": 86, "batt": 94, "build": 86 },
+
+  { "name": "Swift 14 AI",         "brand": "Acer", "line": "Swift",      "eco": "Windows",  "cat": "Laptop", "price": 1099, "drop": 150, "perf": 72, "port": 92, "disp": 82, "batt": 92, "build": 78 },
+  { "name": "Aspire 15",           "brand": "Acer", "line": "Aspire",     "eco": "Windows",  "cat": "Laptop", "price": 599,  "drop": 80,  "perf": 58, "port": 70, "disp": 64, "batt": 78, "build": 62 },
+  { "name": "Predator Helios 16",  "brand": "Acer", "line": "Predator",   "eco": "Windows",  "cat": "Laptop", "price": 1999, "drop": 250, "perf": 95, "port": 35, "disp": 90, "batt": 42, "build": 78 },
+  { "name": "Nitro V 15",          "brand": "Acer", "line": "Nitro",      "eco": "Windows",  "cat": "Laptop", "price": 849,  "drop": 100, "perf": 76, "port": 46, "disp": 68, "batt": 48, "build": 64 },
+  { "name": "Chromebook Plus 514", "brand": "Acer", "line": "Chromebook", "eco": "ChromeOS", "cat": "Laptop", "price": 399,  "drop": 50,  "perf": 48, "port": 84, "disp": 62, "batt": 88, "build": 62 },
+
+  { "name": "Raider 18 HX",         "brand": "MSI", "line": "Raider",   "eco": "Windows", "cat": "Laptop", "price": 2999, "drop": 300, "perf": 99, "port": 20, "disp": 92, "batt": 32, "build": 78 },
+  { "name": "Stealth 16 AI",        "brand": "MSI", "line": "Stealth",  "eco": "Windows", "cat": "Laptop", "price": 1899, "drop": 200, "perf": 90, "port": 62, "disp": 88, "batt": 55, "build": 78 },
+  { "name": "Prestige Flip 14 AI+", "brand": "MSI", "line": "Prestige", "eco": "Windows", "cat": "Laptop", "price": 1399, "drop": 100, "perf": 74, "port": 88, "disp": 84, "batt": 98, "build": 78 },
+  { "name": "Katana 15",            "brand": "MSI", "line": "Katana",   "eco": "Windows", "cat": "Laptop", "price": 999,  "drop": 100, "perf": 78, "port": 42, "disp": 68, "batt": 45, "build": 62 },
+
+  { "name": "Blade 14", "brand": "Razer", "line": "Blade", "eco": "Windows", "cat": "Laptop", "price": 2199, "drop": 100, "perf": 91, "port": 76, "disp": 92, "batt": 58, "build": 90 },
+  { "name": "Blade 16", "brand": "Razer", "line": "Blade", "eco": "Windows", "cat": "Laptop", "price": 2699, "drop": 200, "perf": 96, "port": 55, "disp": 94, "batt": 48, "build": 90 },
+
+  { "name": "gram 16",     "brand": "LG", "line": "gram", "eco": "Windows", "cat": "Laptop", "price": 1349, "drop": 200, "perf": 70, "port": 98, "disp": 84, "batt": 90, "build": 74 },
+  { "name": "gram Pro 17", "brand": "LG", "line": "gram", "eco": "Windows", "cat": "Laptop", "price": 1699, "drop": 200, "perf": 78, "port": 94, "disp": 88, "batt": 86, "build": 76 },
+
+  { "name": "MateBook X Pro",  "brand": "Huawei", "line": "MateBook", "eco": "Windows", "cat": "Laptop", "price": 1599, "drop": 200, "perf": 76, "port": 94, "disp": 92, "batt": 84, "build": 88 },
+
+  { "name": "Framework Laptop 13", "brand": "Framework", "line": "Framework Laptop 13", "eco": "Windows", "cat": "Laptop", "price": 1049, "drop": 0, "perf": 70, "port": 86, "disp": 78, "batt": 74, "build": 88 }
 ]

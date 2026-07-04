@@ -26,7 +26,7 @@ const totalDevices = DEVICES.length;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="light" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalHref} />
@@ -45,28 +45,22 @@ const totalDevices = DEVICES.length;
     )}
   </head>
   <body>
-    <header class="site-header">
-      <div class="container row">
-        <a class="logo" href={href('/')} style="text-decoration: none;">
-          DEVICE<span class="accent">LAB</span>
-        </a>
-        <div class="header-meta">{totalDevices} RANKED · LIVE SCORES</div>
-        <nav>
-          <a href={href('/best-laptops-for-students')}>Laptops</a>
-          <a href={href('/best-phones-for-photography')}>Phones</a>
-          <a href={href('/best-tablets-for-drawing')}>Tablets</a>
-          <a href={href('/about')}>About</a>
-        </nav>
-      </div>
+    <header class="dl-site-header">
+      <a class="dl-logo" href={href('/')}>DEVICE<span class="accent">LAB</span></a>
+      <nav class="dl-nav">
+        <a href={href('/best-laptops-for-students')}>Laptops</a>
+        <a href={href('/best-tablets-for-drawing')}>Tablets</a>
+        <a href={href('/best-gaming-pcs')}>PCs</a>
+        <a href={href('/about')}>About</a>
+      </nav>
+      <span class="dl-tagline">{totalDevices} ranked · live scores</span>
     </header>
     <main>
       <slot />
     </main>
-    <footer class="site-footer">
-      <div class="container row">
-        <span>© DeviceLab · Deterministic scoring · Independent</span>
-        <span class="mono">v0.2 · prototype port</span>
-      </div>
+    <footer class="dl-site-footer">
+      <span>© DeviceLab · Deterministic scoring · Independent</span>
+      <span>v0.3 · prototype port</span>
     </footer>
   </body>
 </html>

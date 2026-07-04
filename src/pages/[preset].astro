@@ -1,10 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import { PRESETS } from '../data/presets';
-import { DEVICES } from '../data/devices';
+import { DEVICES, slugify } from '../data/devices';
 import { Board } from '../components/Board';
 import { rankDevices } from '../lib/scoring';
 import { personaById } from '../data/personas';
+import { applyFilters, emptyFilter } from '../lib/facets';
 import { href } from '../lib/href';
 
 export function getStaticPaths() {
@@ -17,8 +18,10 @@ export function getStaticPaths() {
 const { preset } = Astro.props as { preset: import('../data/schema').Preset };
 const persona = personaById(preset.personaId)!;
 
-const pool =
-  preset.category === 'all' ? DEVICES : DEVICES.filter((d) => d.category === preset.category);
+const pool = applyFilters(DEVICES, {
+  ...emptyFilter(),
+  cat: preset.category === 'All' ? 'All' : preset.category,
+});
 const ranked = rankDevices(pool, persona.weights);
 const top3 = ranked.slice(0, 3);
 
@@ -30,29 +33,25 @@ const jsonLd = {
   itemListElement: ranked.slice(0, 10).map((r, i) => ({
     '@type': 'ListItem',
     position: i + 1,
-    url: new URL(`/device/${r.device.id}`, Astro.site ?? Astro.url).toString(),
+    url: new URL(`/device/${slugify(r.device)}`, Astro.site ?? Astro.url).toString(),
     name: r.device.name,
   })),
 };
 ---
 
-<Base
-  title={preset.metaTitle}
-  description={preset.metaDescription}
-  jsonLd={jsonLd}
->
-  <section class="container page-header">
-    <div class="eyebrow">
-      PRESET / {preset.category.toUpperCase()} · {persona.label.toUpperCase()}
+<Base title={preset.metaTitle} description={preset.metaDescription} jsonLd={jsonLd}>
+  <section class="dl-page-header">
+    <div class="dl-eyebrow-hero">
+      PRESET / {preset.category.toUpperCase()} · {persona.id.toUpperCase()}
     </div>
     <h1>{preset.title}</h1>
-    <p class="blurb">{preset.blurb}</p>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
+    <p class="dl-blurb">{preset.blurb}</p>
+    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px;">
       {top3.map((r, i) => (
         <a
-          href={href(`/device/${r.device.id}`)}
-          class="persona-chip"
-          style="background: var(--accent-tint); border-color: var(--accent-soft); color: var(--ink);"
+          href={href(`/device/${slugify(r.device)}`)}
+          class="dl-chip dl-chip--hot"
+          style="background: #FFF0E6; border-color: #FF5C00; color: #1A1D21;"
         >
           #{i + 1} {r.device.name} · {r.score.toFixed(1)}
         </a>
@@ -63,20 +62,18 @@ const jsonLd = {
   <Board
     client:load
     devices={DEVICES}
-    presets={PRESETS}
     initialPersonaId={preset.personaId}
-    initialCategory={preset.category === 'all' ? 'all' : preset.category}
+    initialCategory={preset.category === 'All' ? 'All' : preset.category}
     activePresetSlug={preset.slug}
   />
 
-  <section class="container" style="padding: 24px 0 8px;">
-    <h2>Methodology</h2>
-    <p style="color: var(--ink-2); max-width: 62ch;">
-      Every device is scored on six axes (performance, portability,
-      display, battery, build, value) on a 0–100 scale. The composite
-      score is a weighted mean; nothing about the ranking depends on
-      monetisation. Open the mixer to change the weights — the URL
-      updates so you can share the exact ranking you're looking at.
+  <section class="dl-container" style="padding: 20px 16px 40px; max-width: 780px;">
+    <h2 style="margin-bottom: 6px;">Methodology</h2>
+    <p style="color: #2C2C2C; max-width: 62ch; margin: 0;">
+      Every device is scored on six axes (performance, portability, display, battery, build,
+      value) on a 0–100 scale. The composite is a normalised weighted mean; nothing about the
+      ranking depends on monetisation. Open the mixer to change the weights — the URL updates
+      so you can share the exact ranking you're looking at.
     </p>
   </section>
 </Base>

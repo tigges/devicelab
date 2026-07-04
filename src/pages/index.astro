@@ -15,37 +15,33 @@ const jsonLd = {
 
 <Base
   title="DeviceLab — Tune-your-own device rankings"
-  description="Independent, deterministic rankings of laptops, phones, and tablets. Weight the axes that matter."
+  description="Independent, deterministic rankings of laptops, tablets and desktop PCs. Weight the axes that matter."
   jsonLd={jsonLd}
 >
-  <section class="container page-header">
-    <div class="eyebrow">DEVICELAB / LEADERBOARD</div>
+  <section class="dl-page-header">
+    <div class="dl-eyebrow-hero">DEVICELAB / LEADERBOARD</div>
     <h1>The device leaderboard <br />you can weigh yourself.</h1>
-    <p class="blurb">
+    <p class="dl-blurb">
       No sponsored order. Six axes, deterministic scoring, and a mixer that
       recomputes the board instantly.
     </p>
   </section>
 
-  <Board
-    client:load
-    devices={DEVICES}
-    presets={PRESETS}
-  />
+  <Board client:load devices={DEVICES} />
 
-  <section class="container" style="padding: 24px 0 20px;">
-    <h2 style="margin-bottom: 8px;">SEO landing pages</h2>
-    <p style="color: var(--ink-3); margin-top: 0;">
-      Each of these presets is a fixed URL that preloads a persona and category filter.
+  <section class="dl-container" style="padding-top: 20px;">
+    <h2 style="margin-bottom: 6px;">SEO landing pages</h2>
+    <p style="color: #5F6368; margin-top: 0; font-size: 13px;">
+      Each preset is a fixed URL that preloads a persona and category filter.
     </p>
-    <div class="preset-grid">
-      {PRESETS.map((preset) => (
-        <a class="preset-card" href={href(`/${preset.slug}`)}>
-          <div class="cat">{preset.category.toUpperCase()}</div>
-          <h3>{preset.title}</h3>
-          <p>{preset.blurb}</p>
-        </a>
-      ))}
-    </div>
   </section>
+  <div class="dl-preset-grid">
+    {PRESETS.map((preset) => (
+      <a class="dl-preset-card" href={href(`/${preset.slug}`)}>
+        <div class="cat">{preset.category.toUpperCase()}</div>
+        <h3>{preset.title}</h3>
+        <p>{preset.blurb}</p>
+      </a>
+    ))}
+  </div>
 </Base>

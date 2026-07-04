@@ -55,8 +55,8 @@ export function TrackPriceForm({ deviceId }: Props) {
   }
 
   return (
-    <form className="track-price-form" onSubmit={onSubmit} noValidate>
-      <div className="inputs">
+    <form className="dl-track-form" onSubmit={onSubmit} noValidate>
+      <div className="dl-track-inputs">
         <input
           type="email"
           required
@@ -68,21 +68,20 @@ export function TrackPriceForm({ deviceId }: Props) {
         <input
           type="number"
           inputMode="decimal"
-          placeholder="Target £ (optional)"
+          placeholder="Target £"
           value={target}
           onChange={(e) => setTarget(e.target.value)}
           aria-label="Target price"
-          style={{ flex: '0 0 160px' }}
         />
       </div>
-      <button className="btn-primary" type="submit" disabled={status.kind === 'sending'}>
-        {status.kind === 'sending' ? 'Saving…' : 'Notify me'}
+      <button className="dl-done" type="submit" disabled={status.kind === 'sending'}>
+        {status.kind === 'sending' ? 'Saving…' : 'Notify me on target'}
       </button>
       {status.kind === 'ok' && (
-        <div className="track-price-status ok">✓ Tracked — we'll email when it drops</div>
+        <div className="dl-track-status ok">✓ TRACKED — WE'LL EMAIL WHEN IT DROPS</div>
       )}
       {status.kind === 'err' && (
-        <div className="track-price-status err">✗ {status.msg}</div>
+        <div className="dl-track-status err">✗ {status.msg}</div>
       )}
     </form>
   );

@@ -1,116 +1,106 @@
 import type { Device, WeightVector } from '../data/schema';
-import { AXES, AXIS_LABEL } from '../data/schema';
+import { AXES, AXIS_META } from '../data/schema';
+import { COMPARE_COLORS } from '../data/merchants';
 import { scoreDevice } from '../lib/scoring';
-import { formatEcosystem, formatPrice } from '../lib/format';
-import { HexIcon } from './HexIcon';
+import { formatGBP } from '../lib/format';
+import { Radar } from './atoms';
 
 interface Props {
   devices: Device[];
   weights: WeightVector;
   onClose: () => void;
-  onRemove: (id: string) => void;
+  onRemove: (id: number) => void;
 }
 
 export function CompareSheet({ devices, weights, onClose, onRemove }: Props) {
-  const columns = devices
-    .map((device) => ({ device, score: scoreDevice(device, weights) }))
-    .sort((a, b) => b.score - a.score);
-
-  // Per-axis best-of highlighting.
-  const bestByAxis = new Map<string, string>();
-  for (const axis of AXES) {
-    let bestId = columns[0]?.device.id;
-    let bestVal = -Infinity;
-    for (const { device } of columns) {
-      if (device.scores[axis] > bestVal) {
-        bestVal = device.scores[axis];
-        bestId = device.id;
-      }
-    }
-    if (bestId) bestByAxis.set(axis, bestId);
-  }
-
   return (
     <>
-      <div className="sheet-scrim" onClick={onClose} />
-      <aside className="bottom-sheet detail wide" role="dialog" aria-label="Compare devices">
-        <div className="sheet-handle" aria-hidden />
-        <button type="button" className="detail-close" onClick={onClose} aria-label="Close comparison">
+      <div className="dl-scrim" style={{ zIndex: 55 }} onClick={onClose} />
+      <div className="dl-overlay" role="dialog" aria-label="Compare devices">
+        <button
+          className="dl-overlay-close"
+          onClick={onClose}
+          aria-label="Close comparison"
+          type="button"
+        >
           ×
         </button>
-        <div className="sheet-body detail-body">
-          <h3 className="sheet-title">COMPARE · {devices.length} DEVICES</h3>
+        <div className="dl-grabber" />
+        <p className="dl-sheet-title">Compare</p>
 
-          <div className="compare-hex-row">
-            {columns.map(({ device }) => (
-              <div className="compare-hex-cell" key={device.id}>
-                <HexIcon scores={device.scores} size={44} />
-                <div className="compare-hex-name">{device.name}</div>
-                <button
-                  type="button"
-                  className="compare-hex-remove"
-                  onClick={() => onRemove(device.id)}
-                  aria-label={`Remove ${device.name}`}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className="compare-table-wrap">
-            <table className="compare-table">
-              <thead>
-                <tr>
-                  <th />
-                  {columns.map(({ device }) => (
-                    <th key={device.id}>{device.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th>Composite</th>
-                  {columns.map(({ device, score }, i) => (
-                    <td key={device.id} className={`score ${i === 0 ? 'best' : ''}`}>
-                      {score.toFixed(1)}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th>Brand · Ecosystem</th>
-                  {columns.map(({ device }) => (
-                    <td key={device.id}>
-                      {device.brand} · {formatEcosystem(device.ecosystem)}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th>Typical price</th>
-                  {columns.map(({ device }) => (
-                    <td key={device.id} className="score">
-                      {formatPrice(device.price, device.currency)}
-                    </td>
-                  ))}
-                </tr>
-                {AXES.map((axis) => (
-                  <tr key={axis}>
-                    <th>{AXIS_LABEL[axis]}</th>
-                    {columns.map(({ device }) => {
-                      const winner = bestByAxis.get(axis) === device.id;
-                      return (
-                        <td key={device.id} className={`score ${winner ? 'best' : ''}`}>
-                          {device.scores[axis]}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="dl-pills">
+          {devices.map((d, i) => (
+            <span key={d.id} className="dl-pill">
+              <span
+                style={{
+                  width: 10,
+                  height: 10,
+                  background: COMPARE_COLORS[i],
+                  borderRadius: 2,
+                  display: 'inline-block',
+                }}
+              />
+              {d.name}
+              <button
+                onClick={() => onRemove(d.id)}
+                aria-label={`Remove ${d.name}`}
+                type="button"
+              >
+                ×
+              </button>
+            </span>
+          ))}
         </div>
-      </aside>
+
+        <Radar devices={devices} />
+
+        <table className="dl-table">
+          <thead>
+            <tr>
+              <th>Axis</th>
+              {devices.map((d, i) => (
+                <th key={d.id} style={{ color: COMPARE_COLORS[i] }}>
+                  {d.line || d.brand}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {AXIS_META.map((a) => {
+              const best = Math.max(...devices.map((d) => d[a.key]));
+              return (
+                <tr key={a.key}>
+                  <td>{a.full}</td>
+                  {devices.map((d) => (
+                    <td key={d.id} className={d[a.key] === best ? 'dl-best' : ''}>
+                      {d[a.key]}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+            <tr>
+              <td style={{ fontWeight: 700 }}>Weighted score</td>
+              {devices.map((d) => (
+                <td
+                  key={d.id}
+                  style={{ fontWeight: 700, color: '#FF5C00' }}
+                >
+                  {scoreDevice(d, weights).toFixed(1)}
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td style={{ fontWeight: 700 }}>Price</td>
+              {devices.map((d) => (
+                <td key={d.id} style={{ fontWeight: 700 }}>
+                  {formatGBP(d.price)}
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }

@@ -43,7 +43,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
   if (targetPrice != null && (typeof targetPrice !== 'number' || targetPrice < 0)) {
     return json({ error: 'targetPrice must be a positive number' }, 400);
   }
-  if (!DEVICES.some((d) => d.id === deviceId)) {
+  // Accept either the numeric device id or the URL slug — the client uses
+  // whichever it has to hand.
+  if (
+    !DEVICES.some(
+      (d) => String(d.id) === deviceId || `${d.brand}-${d.name}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') === deviceId,
+    )
+  ) {
     return json({ error: 'unknown device' }, 404);
   }
 

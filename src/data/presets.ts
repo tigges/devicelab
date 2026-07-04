@@ -1,10 +1,8 @@
 import type { Preset } from './schema';
 
 /**
- * SEO landing presets: a persona × category combination mapped to a
- * stable URL. Each page pre-selects the matching persona chip and
- * category filter on the board.
- *
+ * SEO landing presets — persona × category → stable URL. Each page
+ * preselects the matching persona and category filter on the board.
  * Slugs are used verbatim in URLs; treat them as public API.
  */
 export const PRESETS: Preset[] = [
@@ -13,97 +11,86 @@ export const PRESETS: Preset[] = [
     slug: 'best-laptops-for-students',
     title: 'Best laptops for students',
     metaTitle: 'Best Laptops for Students 2026 — DeviceLab',
-    metaDescription:
-      'Independently scored ranking of the best student laptops, weighted for battery, portability, and value.',
-    personaId: 'student',
-    category: 'laptops',
-    blurb: 'Battery, portability, value — weighted for the three things a student actually notices.',
+    metaDescription: 'Ranked laptops weighted for battery, portability, and value.',
+    personaId: 'Student',
+    category: 'Laptop',
+    blurb: 'Battery, portability, value — the three things a student actually notices.',
   },
   {
     slug: 'best-laptops-for-creators',
     title: 'Best laptops for creators',
     metaTitle: 'Best Laptops for Creators & Designers 2026 — DeviceLab',
-    metaDescription:
-      'Deterministic ranking of the best laptops for photo, video, and design work.',
-    personaId: 'creator',
-    category: 'laptops',
-    blurb: 'Display accuracy and sustained performance dominate this preset.',
+    metaDescription: 'Deterministic ranking of the best laptops for photo, video, and design work.',
+    personaId: 'Creator',
+    category: 'Laptop',
+    blurb: 'Display accuracy and sustained performance. Build matters when you carry it.',
   },
   {
-    slug: 'best-laptops-for-gaming',
+    slug: 'best-gaming-laptops',
     title: 'Best gaming laptops',
     metaTitle: 'Best Gaming Laptops 2026 — DeviceLab',
     metaDescription: 'Raw performance and high-refresh displays. Deterministic scoring, no sponsored order.',
-    personaId: 'gamer',
-    category: 'laptops',
-    blurb: 'Frames per second and pixel response. Value and battery deprioritised on purpose.',
+    personaId: 'Gamer',
+    category: 'Laptop',
+    blurb: 'Frames per second and pixel response. Value and battery deprioritised.',
   },
   {
-    slug: 'best-laptops-for-business',
-    title: 'Best laptops for business',
+    slug: 'best-business-laptops',
+    title: 'Best business laptops',
     metaTitle: 'Best Business Laptops 2026 — DeviceLab',
-    metaDescription: 'Ranking weighted for build quality, battery, and portability.',
-    personaId: 'business',
-    category: 'laptops',
-    blurb: 'Battery and build first. Keyboards, hinges, and airport lounges.',
+    metaDescription: 'Business laptops weighted for build quality, battery, and portability.',
+    personaId: 'Business',
+    category: 'Laptop',
+    blurb: 'Battery, portability, build. Airport-lounge laptops.',
   },
   {
     slug: 'best-value-laptops',
     title: 'Best value laptops',
     metaTitle: 'Best Value Laptops 2026 — DeviceLab',
     metaDescription: 'Bang-for-buck ranking of laptops. Value dominates the mix.',
-    personaId: 'value',
-    category: 'laptops',
-    blurb: 'Value dominates the mix. Nothing else is punished — but nothing else compensates.',
-  },
-
-  // ─── Phones ──────────────────────────────────────────────────────────
-  {
-    slug: 'best-phones-for-photography',
-    title: 'Best phones for photography',
-    metaTitle: 'Best Camera Phones 2026 — DeviceLab',
-    metaDescription: 'Ranking of the best phones for stills and video.',
-    personaId: 'creator',
-    category: 'phones',
-    blurb: 'Display and performance lead here — the two things that show a good shot at its best.',
-  },
-  {
-    slug: 'best-phones-for-battery',
-    title: 'Best phones for battery life',
-    metaTitle: 'Longest Battery Life Phones 2026 — DeviceLab',
-    metaDescription: 'Phones ranked by battery life and value — no design tax.',
-    personaId: 'student',
-    category: 'phones',
-    blurb: 'Optimised for endurance. Value keeps the list honest.',
-  },
-  {
-    slug: 'best-budget-phones',
-    title: 'Best budget phones',
-    metaTitle: 'Best Budget Phones 2026 — DeviceLab',
-    metaDescription: 'Ranked budget phones weighted heavily for value and battery.',
-    personaId: 'value',
-    category: 'phones',
-    blurb: 'Value leads. We surface phones that punch above their price.',
+    personaId: 'Value',
+    category: 'Laptop',
+    blurb: 'Value dominates. Nothing else is punished — but nothing else compensates.',
   },
 
   // ─── Tablets ─────────────────────────────────────────────────────────
   {
     slug: 'best-tablets-for-drawing',
     title: 'Best tablets for drawing',
-    metaTitle: 'Best Tablets for Artists & Drawing 2026 — DeviceLab',
-    metaDescription: 'Ranked tablets for illustration and note-taking.',
-    personaId: 'creator',
-    category: 'tablets',
-    blurb: 'Display quality is doing the heavy lifting. Performance matters for large canvases.',
+    metaTitle: 'Best Tablets for Artists 2026 — DeviceLab',
+    metaDescription: 'Tablets ranked for illustration and note-taking.',
+    personaId: 'Creator',
+    category: 'Tablet',
+    blurb: 'Display and performance lead. Portability keeps it a tablet, not a laptop.',
   },
   {
     slug: 'best-tablets-for-students',
     title: 'Best tablets for students',
     metaTitle: 'Best Student Tablets 2026 — DeviceLab',
-    metaDescription: 'Ranking of the best tablets for students.',
-    personaId: 'student',
-    category: 'tablets',
+    metaDescription: 'Tablets ranked for value, battery, and portability.',
+    personaId: 'Student',
+    category: 'Tablet',
     blurb: 'Value first. Battery and portability tie for second.',
+  },
+
+  // ─── Desktops / PCs ──────────────────────────────────────────────────
+  {
+    slug: 'best-desktop-pcs-for-creators',
+    title: 'Best desktop PCs for creators',
+    metaTitle: 'Best Creator PCs 2026 — DeviceLab',
+    metaDescription: 'Desktops ranked for sustained render performance.',
+    personaId: 'Creator',
+    category: 'Desktop',
+    blurb: 'Performance dominates — battery and portability are zeroed out for desktops.',
+  },
+  {
+    slug: 'best-gaming-pcs',
+    title: 'Best gaming PCs',
+    metaTitle: 'Best Gaming Desktop PCs 2026 — DeviceLab',
+    metaDescription: 'Ranked gaming desktops.',
+    personaId: 'Gamer',
+    category: 'Desktop',
+    blurb: 'Raw performance and display response. Everything else takes a back seat.',
   },
 ];
 

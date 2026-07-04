@@ -1,17 +1,72 @@
-import type { Device } from '../schema';
-import laptopsRaw from './laptops.json' with { type: 'json' };
-import phonesRaw from './phones.json' with { type: 'json' };
-import tabletsRaw from './tablets.json' with { type: 'json' };
+/**
+ * Device loader: reads flat seed JSON and derives two runtime fields:
+ *  - `hist`: 8-point synthetic price history from `price` + `drop`.
+ *  - `value`: perf-per-£ min-max normalised to 30–100 across the whole
+ *            catalogue. This is why we compute it *after* concatenating.
+ * Also fills in default `line` (brand fallback), sequential ids, and
+ * category-level pair defaults.
+ *
+ * TODO(ingestion): once the n8n price job populates real `hist` per
+ * device, drop the synthesis path and read `hist` straight from JSON.
+ */
+import type { Device, DeviceSeed } from '../schema';
+import laptopsSeed from './laptops.json' with { type: 'json' };
+import tabletsSeed from './tablets.json' with { type: 'json' };
+import desktopsSeed from './desktops.json' with { type: 'json' };
 
-// Cast is safe: schema is checked in `scripts/validate-data.ts` (not shipped) and
-// enforced by the shape of the JSON. Keeping the raw imports typed as unknown
-// would force useless narrowing at every callsite.
-const laptops = laptopsRaw as unknown as Device[];
-const phones = phonesRaw as unknown as Device[];
-const tablets = tabletsRaw as unknown as Device[];
+const PAIR_DEFAULTS: Record<string, string[]> = {
+  Laptop: ['USB-C dock', 'Laptop sleeve', 'Wireless mouse'],
+  Tablet: ['Stylus pen', 'Keyboard cover', 'Folio case'],
+  Desktop: ['Monitor', 'Mechanical keyboard', 'Webcam'],
+};
 
-export const DEVICES: Device[] = [...laptops, ...phones, ...tablets];
+function mkHist(price: number, drop: number): number[] {
+  const start = price + drop;
+  const steps = [0, 0, 0.2, 0.35, 0.5, 0.7, 0.9, 1];
+  return steps.map((s) => Math.round((start - drop * s) / 10) * 10);
+}
 
-export function deviceById(id: string): Device | undefined {
+const seeds: DeviceSeed[] = [
+  ...(laptopsSeed as DeviceSeed[]),
+  ...(tabletsSeed as DeviceSeed[]),
+  ...(desktopsSeed as DeviceSeed[]),
+];
+
+const ppp = seeds.map((d) => d.perf / d.price);
+const pppMin = Math.min(...ppp);
+const pppMax = Math.max(...ppp);
+
+export const DEVICES: Device[] = seeds.map((seed, i) => {
+  const valueScore = Math.round(((seed.perf / seed.price - pppMin) / (pppMax - pppMin || 1)) * 70 + 30);
+  return {
+    ...seed,
+    id: i + 1,
+    line: seed.line ?? seed.brand,
+    value: valueScore,
+    hist: mkHist(seed.price, seed.drop),
+    pairs: PAIR_DEFAULTS[seed.cat] ?? [],
+    gtin: seed.gtin ?? null,
+  };
+});
+
+export function deviceById(id: number): Device | undefined {
   return DEVICES.find((d) => d.id === id);
 }
+
+export function deviceBySlug(slug: string): Device | undefined {
+  return DEVICES.find((d) => slugify(d) === slug);
+}
+
+/**
+ * URL slug derived from brand + name. Stable — used in `/device/<slug>`
+ * routes and in the compact URL state.
+ */
+export function slugify(d: Pick<Device, 'brand' | 'name'>): string {
+  return (`${d.brand}-${d.name}`)
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+export const BRANDS: string[] = [...new Set(DEVICES.map((d) => d.brand))];
