@@ -1,0 +1,66 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  jsonLd?: unknown;
+}
+
+const {
+  title,
+  description = 'DeviceLab — deterministic device rankings you can tune.',
+  canonical,
+  jsonLd,
+} = Astro.props;
+
+const canonicalHref = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalHref} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalHref} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#FF5C00" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {jsonLd && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(jsonLd)}
+      />
+    )}
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container row">
+        <a class="logo" href="/"><span class="dot" aria-hidden></span>DeviceLab</a>
+        <nav>
+          <a href="/best-laptops-for-students">Laptops</a>
+          <a href="/best-phones-for-photography">Phones</a>
+          <a href="/best-tablets-for-drawing">Tablets</a>
+          <a href="/about">About</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container row">
+        <span>© DeviceLab · Deterministic scoring · Independent</span>
+        <span class="mono">v0.1 · prototype port</span>
+      </div>
+    </footer>
+  </body>
+</html>

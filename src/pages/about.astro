@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="About — DeviceLab"
+  description="How DeviceLab scores devices, how the mixer works, and what stays deterministic."
+>
+  <section class="container page-header">
+    <div class="eyebrow">DEVICELAB / ABOUT</div>
+    <h1>How the lab works</h1>
+    <p class="blurb">
+      DeviceLab is a small, opinionated device ranker. We score every device
+      on seven axes and let you weight them yourself. This page is the
+      contract for how that works.
+    </p>
+  </section>
+
+  <section class="container" style="padding: 12px 0 40px; max-width: 68ch;">
+    <h2>Scoring</h2>
+    <ul>
+      <li>Seven axes: performance, battery, display, portability, build, camera, value.</li>
+      <li>Each axis is 0–100.</li>
+      <li>The composite is a normalised weighted mean.</li>
+      <li>Ties break on <span class="mono">value</span>, then alphabetically.</li>
+      <li>
+        <strong>Nothing about the ranking depends on price feeds, affiliate
+        offers, or sponsorship.</strong> If a merchant tries to pay for a
+        higher rank, the answer is no. Ingestion sits in a separate module
+        with a hard boundary to the scoring engine.
+      </li>
+    </ul>
+
+    <h2>Presets</h2>
+    <p>
+      Presets are named weight vectors mapped to a URL like <span class="mono">/best-laptops-for-students</span>.
+      Each one prewires the mixer to what a specific persona typically cares
+      about — you can still slide any axis to override it.
+    </p>
+
+    <h2>Price tracking</h2>
+    <p>
+      "Track price" opens an email capture that stores (email, device, target
+      price) in Cloudflare KV. When the price pipeline lands, a scheduled job
+      will diff incoming price points against saved targets and send at most
+      one email per trigger. No newsletter.
+    </p>
+
+    <h2>Roadmap markers in the code</h2>
+    <p>
+      Two integration points are stubbed and marked in the codebase:
+    </p>
+    <ul class="mono" style="font-size: 13px;">
+      <li>TODO(ingestion) — where the n8n price job writes offers + priceHistory.</li>
+      <li>TODO(affiliate) — where merchant deep links get tracking params appended.</li>
+    </ul>
+  </section>
+</Base>

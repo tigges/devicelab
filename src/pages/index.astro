@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import { PRESETS } from '../data/presets';
+import { DEVICES } from '../data/devices';
+import { Board } from '../components/Board';
+import { rankDevices } from '../lib/scoring';
+
+// Home board is category-agnostic and uses equal weights. It's the "index"
+// view of the whole catalog — good for lay users who don't yet know what
+// they're optimising for.
+const initialWeights = {};
+
+const topFew = rankDevices(DEVICES, initialWeights).slice(0, 3);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'DeviceLab',
+  url: Astro.site?.toString() ?? 'https://devicelab.pages.dev',
+};
+---
+
+<Base
+  title="DeviceLab — Tune-your-own device rankings"
+  description="Independent, deterministic rankings of laptops, phones, and tablets. Weight the axes that matter, share the exact ranking, and compare devices side by side."
+  jsonLd={jsonLd}
+>
+  <section class="container page-header">
+    <div class="eyebrow">DEVICELAB / LEADERBOARD</div>
+    <h1>The device leaderboard <br />you can weigh yourself.</h1>
+    <p class="blurb">
+      No sponsored order. Seven axes, deterministic scoring, and a mixer that
+      recomputes the board instantly. Start with a preset built for your use
+      case, then nudge the sliders until the ranking matches what you actually
+      care about.
+    </p>
+  </section>
+
+  <section class="container">
+    <h2 style="margin-bottom: 12px;">Popular presets</h2>
+    <div class="preset-grid">
+      {PRESETS.map((preset) => (
+        <a class="preset-card" href={`/${preset.slug}`}>
+          <div class="cat">{preset.category.toUpperCase()}</div>
+          <h3>{preset.title}</h3>
+          <p>{preset.blurb}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="container" style="padding-top: 12px;">
+    <h2 style="margin-bottom: 8px;">All devices</h2>
+    <p style="color: var(--ink-3); margin-top: 0;">
+      Equal weights across all axes. Open the mixer to make it yours.
+    </p>
+  </section>
+
+  <Board
+    client:load
+    devices={DEVICES}
+    category="all"
+    initialWeights={initialWeights}
+    presets={PRESETS}
+    headline="ALL DEVICES · EQUAL WEIGHTS"
+  />
+
+  <section class="container" style="padding: 40px 0;">
+    <h2>Top 3 right now</h2>
+    <ol class="mono" style="padding-left: 20px;">
+      {topFew.map((r) => (
+        <li>
+          <a href={`/device/${r.device.id}`}>{r.device.name}</a>
+          &nbsp;— <span style="color: var(--ink-3);">{r.score.toFixed(1)}</span>
+        </li>
+      ))}
+    </ol>
+  </section>
+</Base>

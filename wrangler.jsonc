@@ -1,0 +1,18 @@
+// Cloudflare Workers config, merged with the auto-generated config
+// emitted by @astrojs/cloudflare during `astro build`.
+//
+// Only application bindings live here; the adapter fills in the rest.
+// The `TRACK_PRICE_KV` binding backs POST /api/track-price. Locally
+// (and in preview deploys without the binding) the endpoint gracefully
+// falls back to a logged stub, so you can ship without provisioning.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "devicelab",
+  "compatibility_date": "2024-09-23",
+  "kv_namespaces": [
+    {
+      "binding": "TRACK_PRICE_KV",
+      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+    }
+  ]
+}
