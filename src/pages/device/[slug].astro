@@ -1,0 +1,175 @@
+---
+import Base from '../../layouts/Base.astro';
+import { DEVICES } from '../../data/devices';
+import { PRESETS } from '../../data/presets';
+import { AXES, AXIS_LABEL } from '../../data/schema';
+import { formatEcosystem, formatPrice } from '../../lib/format';
+import { rankDevices } from '../../lib/scoring';
+import { TrackPriceForm } from '../../components/TrackPriceForm';
+
+export function getStaticPaths() {
+  return DEVICES.map((device) => ({
+    params: { slug: device.id },
+    props: { device },
+  }));
+}
+
+const { device } = Astro.props as { device: import('../../data/schema').Device };
+
+// Rank the device against its category peers under equal weights; helps
+// the SEO copy ("#N of M in laptops") and gives users a static reference
+// point that doesn't depend on JS state.
+const peers = DEVICES.filter((d) => d.category === device.category);
+const ranking = rankDevices(peers, {}).find((r) => r.device.id === device.id);
+
+// Related presets: any preset for this category. Shown as chips.
+const relatedPresets = PRESETS.filter(
+  (p) => p.category === device.category || p.category === 'all',
+);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: device.name,
+  brand: { '@type': 'Brand', name: device.brand },
+  category: device.category,
+  description: device.summary,
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: device.currency,
+    price: device.price,
+    availability: 'https://schema.org/InStock',
+    url: new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString(),
+  },
+};
+---
+
+<Base
+  title={`${device.name} — Scores, price, and rank | DeviceLab`}
+  description={`${device.tagline} ${device.summary}`.slice(0, 180)}
+  jsonLd={jsonLd}
+>
+  <section class="container page-header">
+    <div class="eyebrow">
+      {device.category.toUpperCase()} / {device.brand.toUpperCase()} · {device.line.toUpperCase()}
+    </div>
+    <h1>{device.name}</h1>
+    <p class="blurb">{device.tagline}</p>
+
+    <div class="detail-meta" style="margin-top: 22px;">
+      <div class="cell">
+        <div class="k">Composite (equal wts)</div>
+        <div class="v">{ranking?.score.toFixed(1) ?? '—'}</div>
+      </div>
+      <div class="cell">
+        <div class="k">Category rank</div>
+        <div class="v">
+          #{ranking?.rank ?? '—'} of {peers.length}
+        </div>
+      </div>
+      <div class="cell">
+        <div class="k">Ecosystem</div>
+        <div class="v">{formatEcosystem(device.ecosystem)}</div>
+      </div>
+      <div class="cell">
+        <div class="k">Typical price</div>
+        <div class="v">{formatPrice(device.price, device.currency)}</div>
+      </div>
+      <div class="cell">
+        <div class="k">Released</div>
+        <div class="v">{device.releaseYear}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" style="padding: 24px 0;">
+    <h2>Axis scores</h2>
+    <div class="axis-grid">
+      {AXES.map((axis) => (
+        <div class="axis-row">
+          <div class="label">{AXIS_LABEL[axis]}</div>
+          <div class="bar">
+            <span style={`width: ${device.scores[axis]}%`}></span>
+          </div>
+          <div class="val">{device.scores[axis]}</div>
+        </div>
+      ))}
+    </div>
+    <p style="color: var(--ink-2); max-width: 62ch;">{device.summary}</p>
+  </section>
+
+  <section class="container" style="padding: 24px 0;">
+    <h2>Track price</h2>
+    <p style="color: var(--ink-3); margin: 6px 0 12px; font-size: 14px;">
+      Get a one-time email when this device hits your target. No newsletter,
+      no marketing.
+    </p>
+    <div class="track-price" style="border: none; padding-top: 0;">
+      <TrackPriceForm client:idle deviceId={device.id} />
+    </div>
+  </section>
+
+  {device.pairs.length > 0 && (
+    <section class="container" style="padding: 24px 0;">
+      <h2>Pairs well with</h2>
+      <ul class="pairs-list" style="margin-top: 12px;">
+        {device.pairs.map((p) => {
+          const paired = DEVICES.find((d) => d.id === p.deviceId);
+          if (!paired) return null;
+          return (
+            <li>
+              <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center;">
+                <div>
+                  <strong>
+                    <a href={`/device/${paired.id}`}>{paired.name}</a>
+                  </strong>
+                  <div style="color: var(--ink-3); font-size: 13px; margin-top: 2px;">
+                    {p.reason}
+                  </div>
+                </div>
+                <a href={`/device/${paired.id}`} class="btn ghost small">Open →</a>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  <section class="container" style="padding: 24px 0 60px;">
+    <h2>See it ranked</h2>
+    <p style="color: var(--ink-3); margin: 6px 0 12px; font-size: 14px;">
+      This device appears in these rankings — click through to see it in
+      context under a specific weight mix.
+    </p>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+      {relatedPresets.map((p) => (
+        <a href={`/${p.slug}`} class="chip" data-accent="true">
+          {p.title}
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="container" style="padding: 24px 0 60px;">
+    <h2>Offers</h2>
+    {/* TODO(ingestion): render live offers array once the price pipeline
+        (n8n job, separate brief) starts writing to the JSON feed / KV. */}
+    {device.offers.length === 0 ? (
+      <p class="mono" style="color: var(--ink-3); font-size: 12px;">
+        NO LIVE OFFERS — INGESTION PENDING
+      </p>
+    ) : (
+      <ul>
+        {device.offers.map((o) => (
+          <li>
+            {o.merchant} — {formatPrice(o.price, o.currency)}{' '}
+            {o.inStock ? '(in stock)' : '(out of stock)'} —{' '}
+            {/* TODO(affiliate): deep link with tracking params */}
+            <a href={o.url} rel="sponsored noopener" target="_blank">View</a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</Base>
