@@ -1,6 +1,7 @@
 import { AXES, AXIS_LABEL, type Device, type WeightVector } from '../data/schema';
 import { scoreDevice } from '../lib/scoring';
 import { formatEcosystem, formatPrice } from '../lib/format';
+import { href as hrefBase } from '../lib/href';
 import { TrackPriceForm } from './TrackPriceForm';
 
 interface Props {
@@ -135,7 +136,9 @@ export function DetailSheet({ device, weights, allDevices, onClose, onOpenDevice
           )}
 
           <p className="mono" style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 20 }}>
-            <a href={`/device/${device.id}`}>PERMALINK · /device/{device.id}</a>
+            <a href={hrefBase(`/device/${device.id}`)}>
+              PERMALINK · /device/{device.id}
+            </a>
           </p>
         </div>
       </aside>

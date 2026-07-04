@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { href } from '../lib/href';
 
 interface Props {
   deviceId: string;
@@ -24,12 +25,15 @@ export function TrackPriceForm({ deviceId }: Props) {
     if (!email) return;
     setStatus({ kind: 'sending' });
     try {
-      const res = await fetch('/api/track-price', {
+      const res = await fetch(href('/api/track-price'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ deviceId, email, targetPrice: target ? Number(target) : null }),
       });
       if (!res.ok) {
+        if (res.status === 404) {
+          throw new Error('Not available in this deployment (static-only host).');
+        }
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error ?? `HTTP ${res.status}`);
       }
