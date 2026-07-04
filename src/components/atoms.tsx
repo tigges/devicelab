@@ -1,6 +1,8 @@
 import type { Category, Device } from '../data/schema';
 import { AXIS_META, AXES } from '../data/schema';
 import { COMPARE_COLORS } from '../data/merchants';
+import { urgencyFor } from '../lib/urgency';
+import { formatGBP } from '../lib/format';
 
 // ─── Category glyphs (Laptop / Tablet / Desktop) ────────────────────────
 
@@ -250,5 +252,39 @@ export function PriceChart({ hist }: PriceChartProps) {
         </p>
       )}
     </div>
+  );
+}
+
+// ─── Urgency badges (price-drop pill + at-low badge) ────────────────────
+
+interface UrgencyBadgesProps {
+  d: Device;
+  /**
+   * `row` = tight variant used inline in board rows.
+   * `hero` = larger pill for the detail hero.
+   */
+  variant?: 'row' | 'hero';
+}
+
+export function UrgencyBadges({ d, variant = 'row' }: UrgencyBadgesProps) {
+  const u = urgencyFor(d);
+  if (!u.showDropPill && !u.atLow) return null;
+  const isHero = variant === 'hero';
+  return (
+    <span
+      className={`dl-urgency ${isHero ? 'dl-urgency--hero' : ''}`}
+      aria-label="Price signals"
+    >
+      {u.drop > 0 && (
+        <span className="dl-urgency-drop" title={`Down ${formatGBP(u.drop)} over 8 weeks`}>
+          ▼{formatGBP(u.drop)}
+        </span>
+      )}
+      {u.atLow && (
+        <span className="dl-urgency-low" title="Current price matches the 8-week low">
+          8-WK LOW
+        </span>
+      )}
+    </span>
   );
 }

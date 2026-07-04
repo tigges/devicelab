@@ -3,11 +3,13 @@ import Base from '../../layouts/Base.astro';
 import { DEVICES, slugify } from '../../data/devices';
 import { AXIS_META } from '../../data/schema';
 import { LINES } from '../../data/lines';
-import { amazonUrl, mfgUrl } from '../../data/merchants';
+import { defaultOffers } from '../../data/merchants';
 import { formatGBP } from '../../lib/format';
 import { rankDevices } from '../../lib/scoring';
 import { personaById } from '../../data/personas';
+import { urgencyFor } from '../../lib/urgency';
 import { TrackPriceForm } from '../../components/TrackPriceForm';
+import { href } from '../../lib/href';
 
 export function getStaticPaths() {
   return DEVICES.map((device) => ({
@@ -21,7 +23,8 @@ const overall = personaById('Overall')!;
 const peers = DEVICES.filter((d) => d.cat === device.cat);
 const ranking = rankDevices(peers, overall.weights).find((r) => r.device.id === device.id);
 const lineMeta = device.line ? LINES[device.brand]?.[device.line] : undefined;
-const mfg = mfgUrl(device);
+const offers = defaultOffers(device);
+const u = urgencyFor(device);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -37,6 +40,8 @@ const jsonLd = {
     url: new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString(),
   },
 };
+
+const clickApiPath = href('/api/track-click');
 ---
 
 <Base
@@ -52,6 +57,14 @@ const jsonLd = {
     <h1>{device.name}</h1>
     {lineMeta && (
       <p class="dl-blurb"><strong>{device.line}:</strong> {lineMeta.desc}</p>
+    )}
+    {(u.showDropPill || u.atLow) && (
+      <div class="dl-urgency dl-urgency--hero" style="margin-top: 10px;">
+        {u.drop > 0 && (
+          <span class="dl-urgency-drop">▼{formatGBP(u.drop)}</span>
+        )}
+        {u.atLow && <span class="dl-urgency-low">8-WK LOW</span>}
+      </div>
     )}
   </section>
 
@@ -89,15 +102,18 @@ const jsonLd = {
 
   <section class="dl-container" style="padding: 8px 16px 20px;">
     <h2 style="margin-bottom: 8px;">Where to buy</h2>
-    <div class="dl-buy">
-      <a class="dl-buy-btn dl-buy-btn--primary" href={amazonUrl(device)} rel="sponsored noopener" target="_blank">
-        Amazon UK →
-      </a>
-      {mfg && (
-        <a class="dl-buy-btn dl-buy-btn--ghost" href={mfg} rel="sponsored noopener" target="_blank">
-          {device.brand} store →
+    <div class="dl-buy" data-device-id={device.id}>
+      {offers.map((o) => (
+        <a
+          class={`dl-buy-btn ${o.primary ? 'dl-buy-btn--primary' : 'dl-buy-btn--ghost'}`}
+          href={o.url}
+          rel="sponsored noopener"
+          target="_blank"
+          data-merchant-slug={o.merchantSlug}
+        >
+          {o.merchant} →
         </a>
-      )}
+      ))}
     </div>
     <p class="dl-disclosure">
       ↗ Retail links may earn us a commission. This never affects scores or ranking — offers are sorted by price only.
@@ -109,13 +125,47 @@ const jsonLd = {
     <p style="color: #5F6368; margin: 4px 0 12px; font-size: 13px;">
       Get one email when this device hits your target. No newsletter.
     </p>
-    <TrackPriceForm client:idle deviceId={String(device.id)} />
+    <TrackPriceForm client:idle deviceId={String(device.id)} device={device} />
   </section>
 
-  <section class="dl-container" style="padding: 8px 16px 60px;">
+  <section class="dl-container" style="padding: 8px 16px 20px;">
     <h2 style="margin-bottom: 8px;">Pairs well with</h2>
     <div class="dl-pairs">
       {device.pairs.map((pr) => <div class="dl-pair-card">{pr}</div>)}
     </div>
   </section>
 </Base>
+
+<script is:inline define:vars={{ clickApiPath, deviceId: device.id }}>
+  // Delegated outbound-click tracker for the static device page. Uses
+  // sendBeacon so navigation isn't blocked.
+  (() => {
+    const buy = document.querySelector('.dl-buy[data-device-id]');
+    if (!buy) return;
+    buy.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-merchant-slug]');
+      if (!a) return;
+      const payload = JSON.stringify({
+        deviceId,
+        merchantSlug: a.dataset.merchantSlug,
+        source: 'device-page',
+        personaId: null,
+        category: null,
+        ts: Date.now(),
+        path: window.location.pathname,
+      });
+      try {
+        if ('sendBeacon' in navigator) {
+          navigator.sendBeacon(clickApiPath, new Blob([payload], { type: 'application/json' }));
+        } else {
+          fetch(clickApiPath, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true,
+          }).catch(() => {});
+        }
+      } catch { /* noop */ }
+    });
+  })();
+</script>

@@ -7,6 +7,7 @@ declare namespace App {
     runtime: {
       env: {
         TRACK_PRICE_KV?: KVNamespace;
+        CLICK_KV?: KVNamespace;
       };
     };
   }

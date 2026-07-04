@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import type { Device, WeightVector } from '../data/schema';
+import type { Category, Device, PersonaId, WeightVector } from '../data/schema';
 import { AXIS_META } from '../data/schema';
 import { LINES } from '../data/lines';
-import { BRAND_COLORS, amazonUrl, mfgUrl } from '../data/merchants';
+import { BRAND_COLORS, defaultOffers } from '../data/merchants';
 import { explainRank, formatGBP } from '../lib/format';
 import { href } from '../lib/href';
-import { CatGlyph, PriceChart, Radar } from './atoms';
+import { trackClick } from '../lib/track-click';
+import { CatGlyph, PriceChart, Radar, UrgencyBadges } from './atoms';
 import { TrackPriceForm } from './TrackPriceForm';
 import { slugify } from '../data/devices';
 
@@ -13,14 +14,33 @@ interface Props {
   device: Device;
   weights: WeightVector;
   rank: number;
+  personaId: PersonaId | null;
+  category: Category | 'All';
   onClose: () => void;
 }
 
-export function DetailSheet({ device, weights, rank, onClose }: Props) {
+export function DetailSheet({
+  device,
+  weights,
+  rank,
+  personaId,
+  category,
+  onClose,
+}: Props) {
   const [trackOpen, setTrackOpen] = useState(false);
   const lineMeta = device.line ? LINES[device.brand]?.[device.line] : undefined;
-  const mfg = mfgUrl(device);
+  const offers = defaultOffers(device);
   const why = explainRank(device, weights, rank);
+
+  function onOfferClick(merchantSlug: string) {
+    trackClick({
+      deviceId: device.id,
+      merchantSlug,
+      source: 'detail-sheet',
+      personaId,
+      category,
+    });
+  }
 
   return (
     <>
@@ -52,8 +72,11 @@ export function DetailSheet({ device, weights, rank, onClose }: Props) {
               </span>
               {rank > 0 && <span className="dl-rankpill">#{rank} at your weights</span>}
             </div>
-            <div style={{ marginTop: 8, font: "700 18px 'IBM Plex Mono', monospace" }}>
-              {formatGBP(device.price)}
+            <div className="dl-detail-price-row">
+              <div style={{ font: "700 18px 'IBM Plex Mono', monospace" }}>
+                {formatGBP(device.price)}
+              </div>
+              <UrgencyBadges d={device} variant="hero" />
             </div>
           </div>
         </div>
@@ -73,24 +96,19 @@ export function DetailSheet({ device, weights, rank, onClose }: Props) {
         <p className="dl-why">{why}</p>
 
         <div className="dl-buy">
-          <a
-            className="dl-buy-btn dl-buy-btn--primary"
-            href={amazonUrl(device)}
-            target="_blank"
-            rel="sponsored noopener noreferrer"
-          >
-            Amazon UK →
-          </a>
-          {mfg && (
+          {offers.map((o) => (
             <a
-              className="dl-buy-btn dl-buy-btn--ghost"
-              href={mfg}
+              key={o.merchantSlug}
+              className={`dl-buy-btn ${o.primary ? 'dl-buy-btn--primary' : 'dl-buy-btn--ghost'}`}
+              href={o.url}
               target="_blank"
               rel="sponsored noopener noreferrer"
+              onClick={() => onOfferClick(o.merchantSlug)}
+              onAuxClick={() => onOfferClick(o.merchantSlug)}
             >
-              {device.brand} store →
+              {o.merchant} →
             </a>
-          )}
+          ))}
           <button
             className="dl-buy-btn dl-buy-btn--ghost"
             onClick={() => setTrackOpen((o) => !o)}
@@ -101,7 +119,7 @@ export function DetailSheet({ device, weights, rank, onClose }: Props) {
         </div>
         {trackOpen && (
           <div style={{ marginTop: 10 }}>
-            <TrackPriceForm deviceId={String(device.id)} />
+            <TrackPriceForm deviceId={String(device.id)} device={device} />
           </div>
         )}
         <p className="dl-disclosure">

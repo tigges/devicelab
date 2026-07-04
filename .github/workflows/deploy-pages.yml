@@ -41,8 +41,11 @@ jobs:
       # `prerender = false` endpoint without an adapter, so the workflow
       # removes it. The endpoint remains committed for the Cloudflare
       # deploy path.
-      - name: Strip dynamic endpoint (static-only host)
-        run: rm -f src/pages/api/track-price.ts && rmdir --ignore-fail-on-non-empty src/pages/api || true
+      - name: Strip dynamic endpoints (static-only host)
+        # GitHub Pages is static; anything with `prerender = false` must go.
+        run: |
+          rm -f src/pages/api/track-price.ts src/pages/api/track-click.ts
+          rmdir --ignore-fail-on-non-empty src/pages/api || true
 
       - name: Build (Pages target)
         env:

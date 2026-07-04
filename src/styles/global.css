@@ -646,3 +646,63 @@ h3 { font-size: 1rem; }
 /* ─── Content wrappers used by pages ─────────────────────────────── */
 
 .dl-container { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+
+/* ─── Urgency badges + track-price context ────────────────────────── */
+
+.dl-price-block { display: grid; justify-items: end; gap: 4px; text-align: right; }
+.dl-urgency { display: inline-flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.dl-urgency--hero { margin-top: 4px; }
+.dl-urgency-drop {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #E7F5EC;
+  color: #0F9D58;
+  font: 700 10px 'IBM Plex Mono', monospace;
+  letter-spacing: 0.02em;
+  border: 1px solid #0F9D58;
+}
+.dl-urgency-low {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #FF5C00;
+  color: #fff;
+  font: 700 10px 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+}
+.dl-urgency--hero .dl-urgency-drop,
+.dl-urgency--hero .dl-urgency-low {
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.dl-detail-price-row {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.dl-track-context {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  padding: 8px 10px;
+  background: #FCFCFB;
+  border: 1.5px solid #E4E5E2;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+.dl-track-context-cell { display: grid; gap: 2px; }
+.dl-track-context-cell .k {
+  font: 600 9px 'IBM Plex Mono', monospace;
+  color: #9AA0A6;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.dl-track-context-cell .v {
+  font: 700 14px 'IBM Plex Mono', monospace;
+  color: #1A1D21;
+}
+.dl-track-hint {
+  font: 500 11.5px 'IBM Plex Mono', monospace;
+  color: #5F6368;
+  padding: 4px 2px 0;
+}

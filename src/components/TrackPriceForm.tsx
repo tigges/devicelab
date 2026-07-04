@@ -1,8 +1,17 @@
 import { useState } from 'react';
+import type { Device } from '../data/schema';
 import { href } from '../lib/href';
+import { formatGBP } from '../lib/format';
+import { historicalLow } from '../lib/urgency';
 
 interface Props {
   deviceId: string;
+  /**
+   * Optional device context. When supplied, the form shows the current
+   * price + 8-week low as a suggested target, and computes the £ delta
+   * between the user's target and the current price as they type.
+   */
+  device?: Device;
 }
 
 type Status =
@@ -12,18 +21,26 @@ type Status =
   | { kind: 'err'; msg: string };
 
 /**
- * Minimal email capture. Posts to `/api/track-price` which persists to
- * Cloudflare KV when the binding is available, and no-ops (with a 200)
- * otherwise so dev/preview environments stay simple.
+ * Email capture for price alerts. POSTs to `/api/track-price` which
+ * persists to `TRACK_PRICE_KV`; endpoint returns a stubbed 200 in
+ * local/preview when the binding is missing.
  *
- * TODO(alerts): once the price pipeline lands, wire this up to a
- * scheduled job that checks the user's target vs. incoming `priceHistory`
- * deltas and sends one alert email per target.
+ * TODO(alerts): once the price pipeline lands, a scheduled consumer
+ * diffs incoming priceHistory against saved targets and sends a
+ * one-shot alert.
  */
-export function TrackPriceForm({ deviceId }: Props) {
+export function TrackPriceForm({ deviceId, device }: Props) {
+  const low = device ? historicalLow(device.hist) : null;
+  const suggestedTarget = low !== null ? String(low) : '';
+
   const [email, setEmail] = useState('');
-  const [target, setTarget] = useState('');
+  const [target, setTarget] = useState(suggestedTarget);
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
+
+  const targetNum = target ? Number(target) : null;
+  const currentPrice = device?.price ?? null;
+  const deltaFromCurrent =
+    targetNum !== null && currentPrice !== null ? currentPrice - targetNum : null;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -48,7 +65,6 @@ export function TrackPriceForm({ deviceId }: Props) {
       }
       setStatus({ kind: 'ok' });
       setEmail('');
-      setTarget('');
     } catch (err) {
       setStatus({ kind: 'err', msg: err instanceof Error ? err.message : 'Failed' });
     }
@@ -56,6 +72,20 @@ export function TrackPriceForm({ deviceId }: Props) {
 
   return (
     <form className="dl-track-form" onSubmit={onSubmit} noValidate>
+      {device && (
+        <div className="dl-track-context">
+          <span className="dl-track-context-cell">
+            <span className="k">CURRENT</span>
+            <span className="v">{formatGBP(device.price)}</span>
+          </span>
+          {low !== null && low < device.price && (
+            <span className="dl-track-context-cell">
+              <span className="k">8-WK LOW</span>
+              <span className="v">{formatGBP(low)}</span>
+            </span>
+          )}
+        </div>
+      )}
       <div className="dl-track-inputs">
         <input
           type="email"
@@ -74,6 +104,15 @@ export function TrackPriceForm({ deviceId }: Props) {
           aria-label="Target price"
         />
       </div>
+      {deltaFromCurrent !== null && targetNum !== null && targetNum > 0 && (
+        <div className="dl-track-hint">
+          {deltaFromCurrent > 0
+            ? `Notify at ${formatGBP(targetNum)} — ${formatGBP(deltaFromCurrent)} below current.`
+            : deltaFromCurrent < 0
+              ? `Target is above the current price — you'll be notified straight away.`
+              : `Target matches the current price.`}
+        </div>
+      )}
       <button className="dl-done" type="submit" disabled={status.kind === 'sending'}>
         {status.kind === 'sending' ? 'Saving…' : 'Notify me on target'}
       </button>

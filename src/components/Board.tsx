@@ -23,7 +23,7 @@ import {
 import { rankDevices } from '../lib/scoring';
 import { formatGBP } from '../lib/format';
 import { href } from '../lib/href';
-import { CatGlyph, MiniRadar, Spark } from './atoms';
+import { CatGlyph, MiniRadar, Spark, UrgencyBadges } from './atoms';
 import { DetailSheet } from './DetailSheet';
 import { CompareSheet } from './CompareSheet';
 import { BRANDS } from '../data/devices';
@@ -410,7 +410,10 @@ export function Board({
                     </div>
                   </div>
                   <Spark hist={d.hist} />
-                  <div className="dl-price">{formatGBP(d.price)}</div>
+                  <div className="dl-price-block">
+                    <div className="dl-price">{formatGBP(d.price)}</div>
+                    <UrgencyBadges d={d} />
+                  </div>
                 </div>
               </article>
             );
@@ -480,6 +483,8 @@ export function Board({
           device={detailDevice}
           weights={weights}
           rank={detailRank}
+          personaId={preset}
+          category={filter.cat}
           onClose={() => setSheet(null)}
         />
       )}

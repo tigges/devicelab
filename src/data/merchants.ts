@@ -78,3 +78,41 @@ export const BRAND_COLORS: Record<string, string> = {
 };
 
 export const COMPARE_COLORS = ['#FF5C00', '#1D4ED8', '#0F9D58'];
+
+/**
+ * A rendered offer, safe to bind directly to a buy button.
+ * `merchantSlug` is the stable key used by click tracking + affiliate
+ * attribution downstream.
+ */
+export interface RenderedOffer {
+  merchant: string;
+  merchantSlug: string;
+  url: string;
+  primary?: boolean;
+}
+
+/**
+ * Uniform offer list per device. Amazon UK is always primary; brand
+ * store is secondary when the brand has a known endpoint. This is the
+ * *only* place that decides which offers exist — every UI surface
+ * calls this so click tracking and offer ordering stay consistent.
+ *
+ * TODO(ingestion): once the price feed lands, this merges in the
+ * per-device `offers[]` (with live prices + in-stock flags) and sorts
+ * by delivered price.
+ * TODO(affiliate): swap Amazon search URL for tagged ASIN deep links.
+ */
+export function defaultOffers(d: Device): RenderedOffer[] {
+  const offers: RenderedOffer[] = [
+    { merchant: 'Amazon UK', merchantSlug: 'amazon-uk', url: amazonUrl(d), primary: true },
+  ];
+  const brandStore = mfgUrl(d);
+  if (brandStore) {
+    offers.push({
+      merchant: `${d.brand} store`,
+      merchantSlug: `${d.brand.toLowerCase().replace(/\s+/g, '-')}-store`,
+      url: brandStore,
+    });
+  }
+  return offers;
+}
