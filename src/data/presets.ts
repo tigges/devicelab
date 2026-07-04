@@ -1,11 +1,11 @@
 import type { Preset } from './schema';
 
 /**
- * Presets drive the SEO landing routes. Each preset preloads a weight
- * vector into the board (mixer sheet reflects it, user can nudge).
+ * SEO landing presets: a persona × category combination mapped to a
+ * stable URL. Each page pre-selects the matching persona chip and
+ * category filter on the board.
  *
- * Slugs are used verbatim as URLs; keep them stable — external links
- * (and any future affiliate deep links) rely on them.
+ * Slugs are used verbatim in URLs; treat them as public API.
  */
 export const PRESETS: Preset[] = [
   // ─── Laptops ─────────────────────────────────────────────────────────
@@ -14,43 +14,47 @@ export const PRESETS: Preset[] = [
     title: 'Best laptops for students',
     metaTitle: 'Best Laptops for Students 2026 — DeviceLab',
     metaDescription:
-      'Independently scored ranking of the best student laptops, weighted for battery, portability, and value. Deterministic scoring, no sponsored order.',
+      'Independently scored ranking of the best student laptops, weighted for battery, portability, and value.',
+    personaId: 'student',
     category: 'laptops',
-    weights: { battery: 3, portability: 3, value: 3, display: 1, performance: 1 },
-    blurb:
-      'We weight battery, portability, and value first — the three things a student actually notices. Adjust the mixer to match your own priorities.',
+    blurb: 'Battery, portability, value — weighted for the three things a student actually notices.',
   },
   {
     slug: 'best-laptops-for-creators',
     title: 'Best laptops for creators',
     metaTitle: 'Best Laptops for Creators & Designers 2026 — DeviceLab',
     metaDescription:
-      'Deterministic ranking of the best laptops for photo, video, and design work — weighted for display, performance, and build.',
+      'Deterministic ranking of the best laptops for photo, video, and design work.',
+    personaId: 'creator',
     category: 'laptops',
-    weights: { display: 3, performance: 3, build: 2, portability: 1 },
-    blurb:
-      'Display accuracy and sustained performance dominate this preset. Build quality matters if you take your machine to a client.',
+    blurb: 'Display accuracy and sustained performance dominate this preset.',
   },
   {
-    slug: 'best-laptops-for-developers',
-    title: 'Best laptops for developers',
-    metaTitle: 'Best Developer Laptops 2026 — DeviceLab',
-    metaDescription:
-      'Ranked laptops for software engineers — weighted for performance, battery, and keyboard-first build.',
+    slug: 'best-laptops-for-gaming',
+    title: 'Best gaming laptops',
+    metaTitle: 'Best Gaming Laptops 2026 — DeviceLab',
+    metaDescription: 'Raw performance and high-refresh displays. Deterministic scoring, no sponsored order.',
+    personaId: 'gamer',
     category: 'laptops',
-    weights: { performance: 3, battery: 2, display: 2, build: 2, portability: 1 },
-    blurb:
-      'Long compile jobs, long flights, and a keyboard you can live with. Performance leads, battery keeps you honest.',
+    blurb: 'Frames per second and pixel response. Value and battery deprioritised on purpose.',
   },
   {
-    slug: 'best-ultrabooks',
-    title: 'Best ultrabooks',
-    metaTitle: 'Best Ultrabooks 2026 — DeviceLab',
-    metaDescription:
-      'Independently ranked ultraportable laptops — weighted for portability, build, and battery.',
+    slug: 'best-laptops-for-business',
+    title: 'Best laptops for business',
+    metaTitle: 'Best Business Laptops 2026 — DeviceLab',
+    metaDescription: 'Ranking weighted for build quality, battery, and portability.',
+    personaId: 'business',
     category: 'laptops',
-    weights: { portability: 3, battery: 2, build: 2, display: 1 },
-    blurb: 'Small footprint, no compromises. Portability leads.',
+    blurb: 'Battery and build first. Keyboards, hinges, and airport lounges.',
+  },
+  {
+    slug: 'best-value-laptops',
+    title: 'Best value laptops',
+    metaTitle: 'Best Value Laptops 2026 — DeviceLab',
+    metaDescription: 'Bang-for-buck ranking of laptops. Value dominates the mix.',
+    personaId: 'value',
+    category: 'laptops',
+    blurb: 'Value dominates the mix. Nothing else is punished — but nothing else compensates.',
   },
 
   // ─── Phones ──────────────────────────────────────────────────────────
@@ -58,40 +62,27 @@ export const PRESETS: Preset[] = [
     slug: 'best-phones-for-photography',
     title: 'Best phones for photography',
     metaTitle: 'Best Camera Phones 2026 — DeviceLab',
-    metaDescription:
-      'Ranking of the best phones for stills and video. Weighted for camera and display; deterministic scoring, no sponsored order.',
+    metaDescription: 'Ranking of the best phones for stills and video.',
+    personaId: 'creator',
     category: 'phones',
-    weights: { camera: 4, display: 2, performance: 1 },
-    blurb:
-      'Camera dominates this preset. Display matters because you edit on the device you shot on.',
+    blurb: 'Display and performance lead here — the two things that show a good shot at its best.',
   },
   {
     slug: 'best-phones-for-battery',
     title: 'Best phones for battery life',
     metaTitle: 'Longest Battery Life Phones 2026 — DeviceLab',
-    metaDescription:
-      'Phones ranked by battery life and value — no camera or design tax.',
+    metaDescription: 'Phones ranked by battery life and value — no design tax.',
+    personaId: 'student',
     category: 'phones',
-    weights: { battery: 4, value: 2, performance: 1 },
     blurb: 'Optimised for endurance. Value keeps the list honest.',
-  },
-  {
-    slug: 'best-flagship-phones',
-    title: 'Best flagship phones',
-    metaTitle: 'Best Flagship Phones 2026 — DeviceLab',
-    metaDescription:
-      'The current flagship ranking — performance, camera, display, and build weighted equally.',
-    category: 'phones',
-    weights: { performance: 2, camera: 2, display: 2, build: 2 },
-    blurb: 'Four axes weighted equally. If money is no object, this is the shortlist.',
   },
   {
     slug: 'best-budget-phones',
     title: 'Best budget phones',
     metaTitle: 'Best Budget Phones 2026 — DeviceLab',
     metaDescription: 'Ranked budget phones weighted heavily for value and battery.',
+    personaId: 'value',
     category: 'phones',
-    weights: { value: 4, battery: 2, camera: 1, display: 1 },
     blurb: 'Value leads. We surface phones that punch above their price.',
   },
 
@@ -100,20 +91,18 @@ export const PRESETS: Preset[] = [
     slug: 'best-tablets-for-drawing',
     title: 'Best tablets for drawing',
     metaTitle: 'Best Tablets for Artists & Drawing 2026 — DeviceLab',
-    metaDescription:
-      'Ranked tablets for illustration and note-taking — weighted for display, performance, and build.',
+    metaDescription: 'Ranked tablets for illustration and note-taking.',
+    personaId: 'creator',
     category: 'tablets',
-    weights: { display: 3, performance: 2, build: 2, portability: 1 },
     blurb: 'Display quality is doing the heavy lifting. Performance matters for large canvases.',
   },
   {
     slug: 'best-tablets-for-students',
     title: 'Best tablets for students',
     metaTitle: 'Best Student Tablets 2026 — DeviceLab',
-    metaDescription:
-      'Ranking of the best tablets for students — weighted for value, battery, and portability.',
+    metaDescription: 'Ranking of the best tablets for students.',
+    personaId: 'student',
     category: 'tablets',
-    weights: { value: 3, battery: 2, portability: 2, display: 1 },
     blurb: 'Value first. Battery and portability tie for second.',
   },
 ];

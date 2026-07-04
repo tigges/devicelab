@@ -1,93 +1,146 @@
-import { AXES, AXIS_LABEL, type Preset, type WeightVector } from '../data/schema';
+import type { Category, Ecosystem, WeightVector } from '../data/schema';
+import { AXES, AXIS_LABEL_SHORT } from '../data/schema';
+import { CategoryIcon } from './CategoryIcon';
+import { formatEcosystem } from '../lib/format';
 
 interface Props {
   weights: WeightVector;
-  onChange: (next: WeightVector) => void;
+  onChangeWeights: (w: WeightVector) => void;
+
+  category: Category | 'all';
+  onChangeCategory: (c: Category | 'all') => void;
+
+  ecosystems: Ecosystem[];
+  onToggleEcosystem: (e: Ecosystem) => void;
+  availableEcosystems: { ecosystem: Ecosystem; count: number }[];
+
+  onOpenMoreFilters: () => void;
   onClose: () => void;
-  presets: Preset[];
-  activePresetSlug?: string;
+  resultsCount: number;
 }
 
-export function MixerSheet({ weights, onChange, onClose, presets, activePresetSlug }: Props) {
+const CATEGORY_OPTIONS: (Category | 'all')[] = ['all', 'laptops', 'tablets', 'phones'];
+const CATEGORY_LABEL: Record<Category | 'all', string> = {
+  all: 'All',
+  laptops: 'Laptop',
+  tablets: 'Tablet',
+  phones: 'Phone',
+};
+
+export function MixerSheet({
+  weights,
+  onChangeWeights,
+  category,
+  onChangeCategory,
+  ecosystems,
+  onToggleEcosystem,
+  availableEcosystems,
+  onOpenMoreFilters,
+  onClose,
+  resultsCount,
+}: Props) {
   return (
     <>
       <div className="sheet-scrim" onClick={onClose} />
-      <aside className="sheet" role="dialog" aria-label="Weight mixer">
-        <header>
-          <div>
-            <div className="mono" style={{ fontSize: 12, color: 'var(--ink-3)' }}>
-              MIXER
-            </div>
-            <div className="title">Tune the ranking</div>
-          </div>
-          <button type="button" className="close" onClick={onClose} aria-label="Close mixer">
-            ×
-          </button>
-        </header>
-        <div className="body">
-          <p style={{ color: 'var(--ink-2)', marginTop: 0 }}>
-            Slide any axis up to weight it heavier. Weights are relative — the ranking
-            re-scores instantly. Zero everything to fall back to equal weights.
-          </p>
+      <aside className="bottom-sheet" role="dialog" aria-label="Mixer and filters">
+        <div className="sheet-handle" aria-hidden />
+        <div className="sheet-body">
+          <h3 className="sheet-title">MIXER &amp; FILTERS</h3>
 
-          <div className="mixer-preset-row" style={{ marginTop: 14 }}>
-            {presets.map((p) => (
-              <button
-                key={p.slug}
-                type="button"
-                className="chip"
-                data-active={p.slug === activePresetSlug}
-                data-accent="true"
-                onClick={() => onChange(p.weights)}
-                title={p.blurb}
-              >
-                {p.title.replace(/^Best /, '')}
-              </button>
-            ))}
-          </div>
-
-          <div style={{ paddingTop: 8 }}>
+          <div className="slider-list">
             {AXES.map((axis) => {
-              const value = weights[axis] ?? 0;
+              const v = weights[axis] ?? 60;
               return (
-                <div key={axis} className="mixer-axis">
-                  <div className="name">{AXIS_LABEL[axis]}</div>
-                  <div className="value">{value.toFixed(1)}</div>
+                <div key={axis} className="slider-row">
+                  <label htmlFor={`w-${axis}`} className="slider-label">
+                    {AXIS_LABEL_SHORT[axis]}
+                  </label>
                   <input
+                    id={`w-${axis}`}
                     type="range"
                     min={0}
-                    max={5}
-                    step={0.5}
-                    value={value}
+                    max={100}
+                    step={1}
+                    value={v}
+                    style={{ ['--pct' as string]: `${v}%` }}
                     onChange={(e) =>
-                      onChange({ ...weights, [axis]: parseFloat(e.target.value) })
+                      onChangeWeights({ ...weights, [axis]: Number(e.target.value) })
                     }
-                    aria-label={`${AXIS_LABEL[axis]} weight`}
                   />
+                  <span className="slider-value mono">{v}</span>
                 </div>
               );
             })}
           </div>
 
-          <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
-            <button
-              type="button"
-              className="btn ghost small"
-              onClick={() => onChange({})}
-            >
-              Zero all
-            </button>
-            <button
-              type="button"
-              className="btn small"
-              onClick={onClose}
-              style={{ marginLeft: 'auto' }}
-            >
-              Apply
-            </button>
+          <div className="filter-section">
+            <div className="filter-section-label">CATEGORY</div>
+            <div className="segmented">
+              {CATEGORY_OPTIONS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className="segment"
+                  data-active={c === category}
+                  onClick={() => onChangeCategory(c)}
+                >
+                  {c !== 'all' && <CategoryIcon category={c as Category} />}
+                  <span>{CATEGORY_LABEL[c]}</span>
+                </button>
+              ))}
+            </div>
           </div>
+
+          <div className="filter-section">
+            <div className="filter-section-label">ECOSYSTEM</div>
+            <div className="chip-wrap">
+              <button
+                type="button"
+                className="eco-chip"
+                data-active={ecosystems.length === 0}
+                onClick={() => {
+                  for (const e of ecosystems) onToggleEcosystem(e);
+                }}
+              >
+                All
+              </button>
+              {availableEcosystems.map(({ ecosystem }) => (
+                <button
+                  key={ecosystem}
+                  type="button"
+                  className="eco-chip"
+                  data-active={ecosystems.includes(ecosystem)}
+                  onClick={() => onToggleEcosystem(ecosystem)}
+                >
+                  {abbreviate(formatEcosystem(ecosystem))}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="more-filters-link"
+            onClick={onOpenMoreFilters}
+          >
+            More filters →
+          </button>
+
+          <button type="button" className="btn-primary" onClick={onClose}>
+            Show results ({resultsCount})
+          </button>
         </div>
       </aside>
     </>
   );
+}
+
+/**
+ * Ecosystem labels get truncated to fit the chip row on narrow screens,
+ * matching the prototype's "Andr." / "Win" abbreviations.
+ */
+function abbreviate(name: string): string {
+  if (name === 'Windows') return 'Win';
+  if (name === 'Google') return 'Andr.';
+  return name;
 }

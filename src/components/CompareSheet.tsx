@@ -1,6 +1,8 @@
-import { AXES, AXIS_LABEL, type Device, type WeightVector } from '../data/schema';
+import type { Device, WeightVector } from '../data/schema';
+import { AXES, AXIS_LABEL } from '../data/schema';
 import { scoreDevice } from '../lib/scoring';
 import { formatEcosystem, formatPrice } from '../lib/format';
+import { HexIcon } from './HexIcon';
 
 interface Props {
   devices: Device[];
@@ -10,13 +12,11 @@ interface Props {
 }
 
 export function CompareSheet({ devices, weights, onClose, onRemove }: Props) {
-  // Column-order stable: sorted by composite score desc for the current mixer.
   const columns = devices
     .map((device) => ({ device, score: scoreDevice(device, weights) }))
     .sort((a, b) => b.score - a.score);
 
-  // Per-axis best-of highlighting (highest wins). Precomputed so the render
-  // stays linear.
+  // Per-axis best-of highlighting.
   const bestByAxis = new Map<string, string>();
   for (const axis of AXES) {
     let bestId = columns[0]?.device.id;
@@ -33,46 +33,38 @@ export function CompareSheet({ devices, weights, onClose, onRemove }: Props) {
   return (
     <>
       <div className="sheet-scrim" onClick={onClose} />
-      <aside className="sheet wide" role="dialog" aria-label="Compare devices">
-        <header>
-          <div>
-            <div className="mono" style={{ fontSize: 12, color: 'var(--ink-3)' }}>
-              COMPARE / {devices.length} DEVICES
-            </div>
-            <div className="title">Side by side</div>
+      <aside className="bottom-sheet detail wide" role="dialog" aria-label="Compare devices">
+        <div className="sheet-handle" aria-hidden />
+        <button type="button" className="detail-close" onClick={onClose} aria-label="Close comparison">
+          ×
+        </button>
+        <div className="sheet-body detail-body">
+          <h3 className="sheet-title">COMPARE · {devices.length} DEVICES</h3>
+
+          <div className="compare-hex-row">
+            {columns.map(({ device }) => (
+              <div className="compare-hex-cell" key={device.id}>
+                <HexIcon scores={device.scores} size={44} />
+                <div className="compare-hex-name">{device.name}</div>
+                <button
+                  type="button"
+                  className="compare-hex-remove"
+                  onClick={() => onRemove(device.id)}
+                  aria-label={`Remove ${device.name}`}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
           </div>
-          <button type="button" className="close" onClick={onClose} aria-label="Close comparison">
-            ×
-          </button>
-        </header>
-        <div className="body">
-          <div style={{ overflowX: 'auto' }}>
+
+          <div className="compare-table-wrap">
             <table className="compare-table">
               <thead>
                 <tr>
-                  <th></th>
+                  <th />
                   {columns.map(({ device }) => (
-                    <th key={device.id}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ textTransform: 'none', fontWeight: 700, fontSize: 14 }}>
-                          {device.name}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => onRemove(device.id)}
-                          style={{
-                            background: 'transparent',
-                            border: 0,
-                            color: 'var(--ink-3)',
-                            cursor: 'pointer',
-                            fontSize: 14,
-                          }}
-                          aria-label={`Remove ${device.name} from comparison`}
-                        >
-                          ×
-                        </button>
-                      </div>
-                    </th>
+                    <th key={device.id}>{device.name}</th>
                   ))}
                 </tr>
               </thead>
@@ -94,17 +86,9 @@ export function CompareSheet({ devices, weights, onClose, onRemove }: Props) {
                   ))}
                 </tr>
                 <tr>
-                  <th>Released</th>
-                  {columns.map(({ device }) => (
-                    <td key={device.id} className="score">
-                      {device.releaseYear}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
                   <th>Typical price</th>
                   {columns.map(({ device }) => (
-                    <td key={device.id} className="price">
+                    <td key={device.id} className="score">
                       {formatPrice(device.price, device.currency)}
                     </td>
                   ))}
@@ -122,14 +106,6 @@ export function CompareSheet({ devices, weights, onClose, onRemove }: Props) {
                     })}
                   </tr>
                 ))}
-                <tr>
-                  <th>Tagline</th>
-                  {columns.map(({ device }) => (
-                    <td key={device.id} style={{ color: 'var(--ink-2)' }}>
-                      {device.tagline}
-                    </td>
-                  ))}
-                </tr>
               </tbody>
             </table>
           </div>

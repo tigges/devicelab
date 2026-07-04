@@ -4,6 +4,7 @@ import { PRESETS } from '../data/presets';
 import { DEVICES } from '../data/devices';
 import { Board } from '../components/Board';
 import { rankDevices } from '../lib/scoring';
+import { personaById } from '../data/personas';
 import { href } from '../lib/href';
 
 export function getStaticPaths() {
@@ -14,15 +15,13 @@ export function getStaticPaths() {
 }
 
 const { preset } = Astro.props as { preset: import('../data/schema').Preset };
+const persona = personaById(preset.personaId)!;
 
-// Scope the device pool by category. `'all'` presets show everything.
 const pool =
   preset.category === 'all' ? DEVICES : DEVICES.filter((d) => d.category === preset.category);
-
-const ranked = rankDevices(pool, preset.weights);
+const ranked = rankDevices(pool, persona.weights);
 const top3 = ranked.slice(0, 3);
 
-// ItemList structured data — helps this page qualify for rich results.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -44,17 +43,16 @@ const jsonLd = {
 >
   <section class="container page-header">
     <div class="eyebrow">
-      PRESET / {preset.category.toUpperCase()}
+      PRESET / {preset.category.toUpperCase()} · {persona.label.toUpperCase()}
     </div>
     <h1>{preset.title}</h1>
     <p class="blurb">{preset.blurb}</p>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px;">
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
       {top3.map((r, i) => (
         <a
           href={href(`/device/${r.device.id}`)}
-          class="chip"
-          data-accent="true"
-          style="border-color: var(--accent); color: var(--ink);"
+          class="persona-chip"
+          style="background: var(--accent-tint); border-color: var(--accent-soft); color: var(--ink);"
         >
           #{i + 1} {r.device.name} · {r.score.toFixed(1)}
         </a>
@@ -64,22 +62,21 @@ const jsonLd = {
 
   <Board
     client:load
-    devices={pool}
-    category={preset.category === 'all' ? 'all' : preset.category}
-    initialWeights={preset.weights}
+    devices={DEVICES}
     presets={PRESETS}
+    initialPersonaId={preset.personaId}
+    initialCategory={preset.category === 'all' ? 'all' : preset.category}
     activePresetSlug={preset.slug}
-    headline={preset.title.toUpperCase()}
   />
 
-  <section class="container" style="padding: 40px 0;">
+  <section class="container" style="padding: 24px 0 8px;">
     <h2>Methodology</h2>
     <p style="color: var(--ink-2); max-width: 62ch;">
-      Every device is scored on seven axes (performance, battery, display,
-      portability, build, camera, value) on a 0–100 scale. The composite
+      Every device is scored on six axes (performance, portability,
+      display, battery, build, value) on a 0–100 scale. The composite
       score is a weighted mean; nothing about the ranking depends on
-      monetisation. Open the mixer to change the weights — the URL updates so
-      you can share the exact ranking you're looking at.
+      monetisation. Open the mixer to change the weights — the URL
+      updates so you can share the exact ranking you're looking at.
     </p>
   </section>
 </Base>

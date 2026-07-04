@@ -10,21 +10,40 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 96,
-      "battery": 82,
-      "display": 94,
       "portability": 82,
+      "display": 94,
+      "battery": 82,
       "build": 92,
-      "camera": 94,
       "value": 60
     },
     "price": 999,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Apple Store",
+        "merchantSlug": "apple-store",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.apple.com/uk/shop/buy-iphone/iphone-16-pro",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=iPhone+16+Pro",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [
       { "deviceId": "macbook-pro-14-m4-pro", "reason": "Continuity, Sidecar, iMessage" }
     ],
     "tagline": "Reference camera, reference silicon.",
+    "linePitch": "iPhone Pro: The reference for phone silicon and video.",
     "summary": "A18 Pro, 48MP main with a real telephoto, and the best video pipeline on any phone. Ecosystem lock-in is the price."
   },
   {
@@ -38,19 +57,38 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 92,
-      "battery": 84,
-      "display": 86,
       "portability": 86,
+      "display": 86,
+      "battery": 84,
       "build": 88,
-      "camera": 86,
       "value": 74
     },
     "price": 799,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Apple Store",
+        "merchantSlug": "apple-store",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.apple.com/uk/shop/buy-iphone/iphone-16",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=iPhone+16",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "The 'good enough' flagship.",
+    "linePitch": "iPhone: The default flagship for most Apple users.",
     "summary": "Non-ProMotion, but you get the A18, Apple Intelligence, and a solid dual camera. The right pick for most Apple users."
   },
   {
@@ -64,19 +102,38 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 82,
-      "battery": 80,
-      "display": 92,
       "portability": 84,
+      "display": 92,
+      "battery": 80,
       "build": 88,
-      "camera": 96,
       "value": 72
     },
     "price": 999,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Google Store",
+        "merchantSlug": "google-store",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://store.google.com/gb/product/pixel_9_pro",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=Pixel+9+Pro",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "AI camera powerhouse.",
+    "linePitch": "Pixel Pro: The AI-forward flagship, camera-first.",
     "summary": "Tensor G4 is fine, not great; the camera system and Gemini-integrated editing are unmatched. 7 years of updates."
   },
   {
@@ -90,19 +147,29 @@
     "releaseYear": 2025,
     "scores": {
       "performance": 74,
-      "battery": 86,
-      "display": 78,
       "portability": 88,
+      "display": 78,
+      "battery": 86,
       "build": 76,
-      "camera": 86,
       "value": 92
     },
     "price": 499,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Google Store",
+        "merchantSlug": "google-store",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://store.google.com/gb/product/pixel_9a",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Cheapest ticket to a great camera.",
+    "linePitch": "Pixel a: Value benchmark. Flagship camera, budget shell.",
     "summary": "Same Tensor G4 as the Pro line, plastic build, and a battery that lasts. Value benchmark for 2025."
   },
   {
@@ -116,19 +183,38 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 92,
-      "battery": 84,
-      "display": 96,
       "portability": 70,
+      "display": 96,
+      "battery": 84,
       "build": 94,
-      "camera": 90,
       "value": 58
     },
     "price": 1299,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Samsung UK",
+        "merchantSlug": "samsung-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.samsung.com/uk/smartphones/galaxy-s24-ultra/",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=Galaxy+S24+Ultra",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Everything phone with a stylus.",
+    "linePitch": "S Ultra: Everything phone. Stylus, periscope, titanium.",
     "summary": "Titanium frame, 5x periscope, 200MP main, S Pen. Also physically enormous and priced at the top of the market."
   },
   {
@@ -142,19 +228,29 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 88,
-      "battery": 78,
-      "display": 90,
       "portability": 90,
+      "display": 90,
+      "battery": 78,
       "build": 88,
-      "camera": 82,
       "value": 70
     },
     "price": 799,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Samsung UK",
+        "merchantSlug": "samsung-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.samsung.com/uk/smartphones/galaxy-s24/",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Compact Android done right.",
+    "linePitch": "Galaxy S: Compact Android flagship, still small enough to use.",
     "summary": "6.2\" flat OLED, Snapdragon 8 Gen 3 (regional), 7 years of updates. The Android flagship for people who still want a small phone."
   },
   {
@@ -168,19 +264,29 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 94,
-      "battery": 92,
-      "display": 92,
       "portability": 78,
+      "display": 92,
+      "battery": 92,
       "build": 86,
-      "camera": 84,
       "value": 84
     },
     "price": 899,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "OnePlus UK",
+        "merchantSlug": "oneplus-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.oneplus.com/uk/oneplus-13",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Fastest charging flagship you can buy.",
+    "linePitch": "OnePlus: Fastest charging Android flagship.",
     "summary": "Snapdragon 8 Elite, 6000 mAh, 100W wired charging, IP69. Software support trails Samsung/Google but hardware is class-leading."
   },
   {
@@ -194,19 +300,29 @@
     "releaseYear": 2025,
     "scores": {
       "performance": 72,
-      "battery": 82,
-      "display": 84,
       "portability": 82,
+      "display": 84,
+      "battery": 82,
       "build": 78,
-      "camera": 80,
       "value": 86
     },
     "price": 459,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Nothing UK",
+        "merchantSlug": "nothing-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://uk.nothing.tech/products/phone-3a-pro",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "The Glyph phone with a real periscope.",
+    "linePitch": "Nothing Phone: Style-first Android with real cameras and battery.",
     "summary": "Snapdragon 7s Gen 3, periscope telephoto, and Nothing OS 3. Style-first Android that still delivers on cameras and battery."
   }
 ]

@@ -1,128 +1,145 @@
-import { AXES, AXIS_LABEL, type Device, type WeightVector } from '../data/schema';
+import type { Device, WeightVector } from '../data/schema';
+import { AXIS_LABEL } from '../data/schema';
 import { scoreDevice } from '../lib/scoring';
-import { formatEcosystem, formatPrice } from '../lib/format';
-import { href as hrefBase } from '../lib/href';
+import { explainRank, formatEcosystem, formatPrice } from '../lib/format';
+import { href } from '../lib/href';
+import { HexIcon } from './HexIcon';
+import { CategoryIcon } from './CategoryIcon';
+import { RadarChart } from './RadarChart';
 import { TrackPriceForm } from './TrackPriceForm';
 
 interface Props {
   device: Device;
   weights: WeightVector;
+  rank: number;
   allDevices: Device[];
   onClose: () => void;
   onOpenDevice: (id: string) => void;
 }
 
-export function DetailSheet({ device, weights, allDevices, onClose, onOpenDevice }: Props) {
-  const score = scoreDevice(device, weights);
+export function DetailSheet({ device, weights, rank, allDevices, onClose, onOpenDevice }: Props) {
+  const composite = scoreDevice(device, weights);
+  const primaryOffer = device.offers[0];
+  const secondaryOffer = device.offers[1];
 
   return (
     <>
       <div className="sheet-scrim" onClick={onClose} />
-      <aside className="sheet" role="dialog" aria-label={`${device.name} details`}>
-        <header>
-          <div>
-            <div className="mono" style={{ fontSize: 12, color: 'var(--ink-3)' }}>
-              DEVICE / {device.id}
-            </div>
-            <div className="title">{device.name}</div>
-          </div>
-          <button type="button" className="close" onClick={onClose} aria-label="Close details">
-            ×
-          </button>
-        </header>
+      <aside className="bottom-sheet detail" role="dialog" aria-label={`${device.name} details`}>
+        <div className="sheet-handle" aria-hidden />
+        <button
+          type="button"
+          className="detail-close"
+          onClick={onClose}
+          aria-label="Close details"
+        >
+          ×
+        </button>
 
-        <div className="body">
+        <div className="sheet-body detail-body">
           <div className="detail-hero">
-            <div className="brand-line">
-              {device.brand} · {device.line}
+            <div className="detail-hex">
+              <HexIcon scores={device.scores} size={72} />
             </div>
-            <h2>
-              {device.name}{' '}
-              <span className="badge">{score.toFixed(1)}</span>
-            </h2>
-            <p className="tagline">{device.tagline}</p>
-          </div>
-
-          <div className="detail-meta">
-            <div className="cell">
-              <div className="k">Category</div>
-              <div className="v">{device.category}</div>
-            </div>
-            <div className="cell">
-              <div className="k">Ecosystem</div>
-              <div className="v">{formatEcosystem(device.ecosystem)}</div>
-            </div>
-            <div className="cell">
-              <div className="k">Released</div>
-              <div className="v">{device.releaseYear}</div>
-            </div>
-            <div className="cell">
-              <div className="k">Typical Price</div>
-              <div className="v">{formatPrice(device.price, device.currency)}</div>
-            </div>
-          </div>
-
-          <div className="axis-grid">
-            {AXES.map((axis) => (
-              <div className="axis-row" key={axis}>
-                <div className="label">{AXIS_LABEL[axis]}</div>
-                <div className="bar">
-                  <span style={{ width: `${device.scores[axis]}%` }} />
-                </div>
-                <div className="val">{device.scores[axis]}</div>
+            <div className="detail-hero-body">
+              <h2 className="detail-name">{device.name}</h2>
+              <div className="detail-tags">
+                <span className="dark-chip">{device.brand}</span>
+                <span className="dark-chip">{device.line}</span>
               </div>
-            ))}
+              <div className="detail-meta">
+                <CategoryIcon category={device.category} />
+                <span>{titleCase(device.category)}</span>
+                <span aria-hidden>·</span>
+                <span>{formatEcosystem(device.ecosystem)}</span>
+              </div>
+              <div className="detail-badge">#{rank} at your weights</div>
+              <div className="detail-price mono">
+                {formatPrice(device.price, device.currency)}
+              </div>
+            </div>
           </div>
 
-          <p style={{ color: 'var(--ink-2)' }}>{device.summary}</p>
+          <p className="detail-linepitch">{device.linePitch}</p>
 
-          <div className="track-price">
-            <h3>Track price</h3>
-            <p style={{ color: 'var(--ink-3)', margin: '6px 0 12px', fontSize: 14 }}>
-              Get one email when this device hits your target. No newsletter.
-            </p>
-            <TrackPriceForm deviceId={device.id} />
-          </div>
+          <div className="detail-explain">{explainRank(device, weights)}</div>
 
-          {/* TODO(ingestion): render `offers` list when the price pipeline lands.
-              Each row shows merchant, price, in-stock, and a deep affiliate link. */}
-          <div style={{ padding: '20px 0', borderBottom: '1px solid var(--rule)' }}>
-            <h3>Offers</h3>
-            {device.offers.length === 0 ? (
-              <p className="mono" style={{ color: 'var(--ink-3)', fontSize: 12 }}>
-                NO LIVE OFFERS — INGESTION PENDING
-              </p>
-            ) : (
-              <ul>
-                {device.offers.map((o) => (
-                  <li key={o.merchant}>
-                    {o.merchant} — {formatPrice(o.price, o.currency)}{' '}
-                    {o.inStock ? '(in stock)' : '(out of stock)'}
-                  </li>
-                ))}
-              </ul>
+          <div className="detail-cta-row">
+            {primaryOffer && (
+              <a
+                href={primaryOffer.url}
+                target="_blank"
+                rel="sponsored noopener"
+                className="cta-primary"
+              >
+                {primaryOffer.merchant.toUpperCase()} →
+              </a>
+            )}
+            {secondaryOffer && (
+              <a
+                href={secondaryOffer.url}
+                target="_blank"
+                rel="sponsored noopener"
+                className="cta-secondary"
+              >
+                {secondaryOffer.merchant.toUpperCase()} →
+              </a>
             )}
           </div>
 
+          <details className="track-price-details">
+            <summary className="cta-track">TRACK PRICE</summary>
+            <div className="track-price-body">
+              <TrackPriceForm deviceId={device.id} />
+            </div>
+          </details>
+
+          <p className="detail-disclaimer mono">
+            ↗ Retail links may earn us a commission. This never affects
+            scores or ranking — offers are sorted by price only.
+          </p>
+
+          <div className="detail-section">
+            <h3 className="detail-section-title">PROFILE</h3>
+            <div className="detail-radar-wrap">
+              <RadarChart scores={device.scores} size={280} />
+            </div>
+            <div className="detail-scores-grid">
+              {(Object.keys(AXIS_LABEL) as (keyof typeof AXIS_LABEL)[]).map((axis) => (
+                <div key={axis} className="score-cell">
+                  <div className="score-cell-label">{AXIS_LABEL[axis]}</div>
+                  <div className="score-cell-value mono">{device.scores[axis]}</div>
+                  <div className="score-cell-bar" aria-hidden>
+                    <span style={{ width: `${device.scores[axis]}%` }} />
+                  </div>
+                </div>
+              ))}
+              <div className="score-cell score-cell-composite">
+                <div className="score-cell-label">Composite</div>
+                <div className="score-cell-value mono accent">{composite.toFixed(1)}</div>
+              </div>
+            </div>
+          </div>
+
+          <p className="detail-summary">{device.summary}</p>
+
           {device.pairs.length > 0 && (
-            <div style={{ padding: '20px 0' }}>
-              <h3>Pairs well with</h3>
-              <ul className="pairs-list" style={{ marginTop: 10 }}>
+            <div className="detail-section">
+              <h3 className="detail-section-title">PAIRS WELL WITH</h3>
+              <ul className="pairs-list">
                 {device.pairs.map((p) => {
                   const paired = allDevices.find((d) => d.id === p.deviceId);
                   if (!paired) return null;
                   return (
-                    <li key={p.deviceId}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+                    <li key={paired.id}>
+                      <div className="pair-row">
                         <div>
                           <strong>{paired.name}</strong>
-                          <div style={{ color: 'var(--ink-3)', fontSize: 13, marginTop: 2 }}>
-                            {p.reason}
-                          </div>
+                          <div className="pair-reason">{p.reason}</div>
                         </div>
                         <button
                           type="button"
-                          className="btn ghost small"
+                          className="btn-ghost-small"
                           onClick={() => onOpenDevice(paired.id)}
                         >
                           Open →
@@ -135,8 +152,8 @@ export function DetailSheet({ device, weights, allDevices, onClose, onOpenDevice
             </div>
           )}
 
-          <p className="mono" style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 20 }}>
-            <a href={hrefBase(`/device/${device.id}`)}>
+          <p className="mono detail-permalink">
+            <a href={href(`/device/${device.id}`)}>
               PERMALINK · /device/{device.id}
             </a>
           </p>
@@ -144,4 +161,8 @@ export function DetailSheet({ device, weights, allDevices, onClose, onOpenDevice
       </aside>
     </>
   );
+}
+
+function titleCase(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }

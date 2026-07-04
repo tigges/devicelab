@@ -1,69 +1,79 @@
 /**
  * Canonical DeviceLab schema.
  *
- * Devices live in flat JSON files under `src/data/devices/*.json` and are
- * imported directly (no runtime DB). The schema is intentionally strict on
- * identity + scores so the scoring engine is deterministic, and loose on
- * monetisation fields (`offers`, `priceHistory`) so the ingestion pipeline
- * defined in a separate brief can fill them in later without any code change.
+ * Devices live in flat JSON files under `src/data/devices/*.json`.
+ * The schema is intentionally strict on identity + scores so the scoring
+ * engine is deterministic, and loose on monetisation fields
+ * (`offers`, `priceHistory`) so the ingestion pipeline can fill them in
+ * later without any code change.
  */
 
-// Categories we currently cover. Adding a new one requires:
-//   1. a matching JSON file in src/data/devices/<category>.json
-//   2. registering it in `src/data/devices/index.ts`
-//   3. adding at least one preset in `src/data/presets.ts`
 export type Category = 'laptops' | 'phones' | 'tablets';
 
 export type Ecosystem = 'apple' | 'google' | 'microsoft' | 'samsung' | 'open';
 
-/** Score axes used by the mixer. All devices score on every axis 0–100. */
+/**
+ * Score axes used by the mixer. Six axes matches the prototype's mixer
+ * (perf, portab, display, battery, build, value). Camera moved out —
+ * phone camera nuance is expressed in per-category persona weights and
+ * the device summary, not as a separate axis.
+ */
 export const AXES = [
   'performance',
-  'battery',
-  'display',
   'portability',
+  'display',
+  'battery',
   'build',
-  'camera',
   'value',
 ] as const;
 
 export type Axis = (typeof AXES)[number];
-
 export type AxisScores = Record<Axis, number>;
 
-/** Human-readable labels for axes; used in mixer + detail. */
+/** Long + short labels; short labels are for the mixer sliders. */
 export const AXIS_LABEL: Record<Axis, string> = {
   performance: 'Performance',
-  battery: 'Battery',
-  display: 'Display',
   portability: 'Portability',
+  display: 'Display',
+  battery: 'Battery',
   build: 'Build',
-  camera: 'Camera',
   value: 'Value',
 };
 
-/** One raw price point. `source` is a stable slug (e.g. `amazon-us`). */
+export const AXIS_LABEL_SHORT: Record<Axis, string> = {
+  performance: 'PERFORM.',
+  portability: 'PORTAB.',
+  display: 'DISPLAY',
+  battery: 'BATTERY',
+  build: 'BUILD',
+  value: 'VALUE',
+};
+
+/** One raw price point. `source` is a stable slug (e.g. `amazon-uk`). */
 export interface PricePoint {
-  date: string; // ISO-8601 date, e.g. "2026-06-01"
-  price: number; // in `currency` minor units? no — decimal major, keep simple
-  currency: string; // ISO-4217, e.g. "USD"
+  date: string;
+  price: number;
+  currency: string;
   source: string;
 }
 
 /**
- * An affiliate/retail offer. Deliberately empty in seed data.
- * TODO(ingestion): populated by the n8n price job — see separate brief.
+ * An affiliate/retail offer. Prototype-time offers are stub `search`
+ * URLs at the merchant so the UI is usable end-to-end; ingestion will
+ * replace them with priced offers and affiliate deep links.
+ * TODO(affiliate): swap `url` for tagged deep links, populate `price`
+ * from the ingestion feed.
  */
 export interface Offer {
-  merchant: string;
-  price: number;
+  merchant: string; // display name, e.g. "Amazon UK"
+  merchantSlug: string; // stable slug for CTA styling ("amazon-uk", "apple-store")
+  price: number | null; // null until ingestion supplies a live price
   currency: string;
   url: string; // TODO(affiliate): deep link with tracking params
   inStock: boolean;
-  updatedAt: string; // ISO timestamp
+  updatedAt: string; // ISO timestamp; may be empty for stub offers
 }
 
-/** A recommended "pair" — accessory or complementary device. */
 export interface Pair {
   deviceId: string;
   reason: string;
@@ -71,45 +81,61 @@ export interface Pair {
 
 export interface Device {
   // ── identity ──────────────────────────────────────────────────────────
-  id: string; // stable slug, kebab-case, unique across all categories
+  id: string;
   name: string;
   brand: string;
-  line: string; // e.g. "MacBook Pro", "Pixel", "XPS"
+  line: string;
   category: Category;
   ecosystem: Ecosystem;
-  gtin: string | null; // GTIN-14 placeholder, filled by ingestion
+  gtin: string | null;
   releaseYear: number;
 
   // ── scoring ───────────────────────────────────────────────────────────
   scores: AxisScores;
 
-  // ── monetisation (immutable identity price, mutable feed data) ────────
-  price: number; // MSRP or current typical, USD; used until offers arrive
+  // ── monetisation (immutable seed, mutable feed) ───────────────────────
+  price: number;
   currency: string;
-  priceHistory: PricePoint[]; // seeded empty; TODO(ingestion)
-  offers: Offer[]; // seeded empty; TODO(ingestion)
+  priceHistory: PricePoint[];
+  offers: Offer[];
 
   // ── relations ────────────────────────────────────────────────────────
   pairs: Pair[];
 
   // ── copy ──────────────────────────────────────────────────────────────
   tagline: string;
+  /** Category / line-level pitch. Displayed above the "why this rank" card. */
+  linePitch: string;
   summary: string;
 }
 
-// ─── Presets ─────────────────────────────────────────────────────────────
+// ─── Personas + presets ──────────────────────────────────────────────────
 
 export type WeightVector = Partial<Record<Axis, number>>;
 
-export interface Preset {
-  /** Route slug, e.g. "best-laptops-for-students". Used verbatim as URL. */
-  slug: string;
-  title: string; // <h1> and <title> — kept concise for SEO
-  metaTitle: string; // <title> override — includes brand + benefit
-  metaDescription: string;
-  category: Category | 'all';
-  /** Weights are relative; normalised at scoring time. Unmentioned axes = 0. */
+/**
+ * A persona is a named weight vector shown as the top-of-board chips.
+ * Personas are category-agnostic — combining them with a category
+ * filter yields the SEO landing routes (`/best-laptops-for-students`).
+ */
+export interface Persona {
+  id: 'overall' | 'value' | 'creator' | 'gamer' | 'student' | 'business';
+  label: string;
+  blurb: string;
   weights: WeightVector;
-  /** Human-readable pitch shown above the board. */
+}
+
+/** SEO landing preset: persona + optional category filter. */
+export interface Preset {
+  slug: string;
+  title: string;
+  metaTitle: string;
+  metaDescription: string;
+  personaId: Persona['id'];
+  category: Category | 'all';
   blurb: string;
 }
+
+// ─── Tri-state brand filter ──────────────────────────────────────────────
+
+export type BrandTriState = 'neutral' | 'only' | 'exclude';

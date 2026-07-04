@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { DEVICES } from '../data/devices';
 import { href } from '../lib/href';
 
 export interface Props {
@@ -17,6 +18,7 @@ const {
 } = Astro.props;
 
 const canonicalHref = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
+const totalDevices = DEVICES.length;
 ---
 
 <!doctype html>
@@ -45,7 +47,10 @@ const canonicalHref = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Ast
   <body>
     <header class="site-header">
       <div class="container row">
-        <a class="logo" href={href('/')}><span class="dot" aria-hidden></span>DeviceLab</a>
+        <a class="logo" href={href('/')} style="text-decoration: none;">
+          DEVICE<span class="accent">LAB</span>
+        </a>
+        <div class="header-meta">{totalDevices} RANKED · LIVE SCORES</div>
         <nav>
           <a href={href('/best-laptops-for-students')}>Laptops</a>
           <a href={href('/best-phones-for-photography')}>Phones</a>
@@ -60,7 +65,7 @@ const canonicalHref = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Ast
     <footer class="site-footer">
       <div class="container row">
         <span>© DeviceLab · Deterministic scoring · Independent</span>
-        <span class="mono">v0.1 · prototype port</span>
+        <span class="mono">v0.2 · prototype port</span>
       </div>
     </footer>
   </body>

@@ -10,21 +10,40 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 94,
-      "battery": 88,
-      "display": 96,
       "portability": 78,
+      "display": 96,
+      "battery": 88,
       "build": 95,
-      "camera": 62,
       "value": 55
     },
     "price": 1999,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=MacBook+Pro+14+M4+Pro",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Apple Store",
+        "merchantSlug": "apple-store",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.apple.com/uk/shop/buy-mac/macbook-pro",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [
       { "deviceId": "iphone-16-pro", "reason": "Handoff, AirDrop, Universal Clipboard" }
     ],
     "tagline": "Silent workstation in a 14\" chassis.",
+    "linePitch": "MacBook Pro: Creator & pro flagship: top performance, best-in-class displays.",
     "summary": "M4 Pro delivers desktop-class performance while sipping power; the mini-LED XDR display and 22h battery make it the default for pro creators inside Apple's ecosystem."
   },
   {
@@ -38,19 +57,38 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 78,
-      "battery": 90,
-      "display": 82,
       "portability": 94,
+      "display": 82,
+      "battery": 90,
       "build": 90,
-      "camera": 55,
       "value": 78
     },
     "price": 1099,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=MacBook+Air+13+M3",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Apple Store",
+        "merchantSlug": "apple-store",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.apple.com/uk/shop/buy-mac/macbook-air",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Fanless all-day carry.",
+    "linePitch": "MacBook Air: The default student & carry-everywhere laptop.",
     "summary": "The best fanless laptop money can buy. Excellent for students and writers; the M3 gives it enough headroom for light Xcode and Lightroom."
   },
   {
@@ -64,19 +102,38 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 80,
-      "battery": 80,
-      "display": 86,
       "portability": 92,
+      "display": 86,
+      "battery": 80,
       "build": 88,
-      "camera": 60,
       "value": 68
     },
     "price": 1299,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=Dell+XPS+13+9350",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Dell UK",
+        "merchantSlug": "dell-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.dell.com/en-uk/shop/laptops/xps-13/spd/xps-13-9350-laptop",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Snapdragon X ultraportable.",
+    "linePitch": "XPS: Windows ultraportable with premium build and OLED options.",
     "summary": "Copilot+ Arm laptop with strong battery, sharp OLED option, and a tight aluminum shell. App compatibility caveats vs. x86 still apply."
   },
   {
@@ -90,19 +147,38 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 76,
-      "battery": 78,
-      "display": 84,
       "portability": 90,
+      "display": 84,
+      "battery": 78,
       "build": 92,
-      "camera": 68,
       "value": 62
     },
     "price": 1749,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Lenovo UK",
+        "merchantSlug": "lenovo-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.lenovo.com/gb/en/p/laptops/thinkpad/thinkpadx1/thinkpad-x1-carbon-gen-12",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=ThinkPad+X1+Carbon+Gen+12",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Business classic, still the reference keyboard.",
+    "linePitch": "ThinkPad X1 Carbon: Business flagship with the reference keyboard.",
     "summary": "Meteor Lake, magnesium chassis, MIL-STD build, and the keyboard people leave other laptops for. Business-first ergonomics."
   },
   {
@@ -116,19 +192,29 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 78,
-      "battery": 72,
-      "display": 80,
       "portability": 84,
+      "display": 80,
+      "battery": 72,
       "build": 78,
-      "camera": 58,
       "value": 84
     },
     "price": 1099,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Framework",
+        "merchantSlug": "framework",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://frame.work/gb/en/laptop13",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Repairable, upgradeable, socketed everything.",
+    "linePitch": "Framework 13: The only mainstream repairable laptop.",
     "summary": "The only mainstream laptop where the mainboard, ports, keyboard, and battery are user-serviceable. Small ecosystem, large longevity."
   },
   {
@@ -142,19 +228,29 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 82,
-      "battery": 76,
-      "display": 92,
       "portability": 80,
+      "display": 92,
+      "battery": 76,
       "build": 82,
-      "camera": 62,
       "value": 74
     },
     "price": 1499,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=ASUS+Zenbook+S16+OLED",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "OLED-first thin-and-light.",
+    "linePitch": "Zenbook S16: Big-screen OLED thin-and-light with Ryzen AI.",
     "summary": "Ryzen AI 9 HX 370 in a 1.5 kg chassis with a 3K OLED — the best display in this bracket by a clear margin."
   },
   {
@@ -168,19 +264,38 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 96,
-      "battery": 56,
-      "display": 94,
       "portability": 60,
+      "display": 94,
+      "battery": 56,
       "build": 88,
-      "camera": 60,
       "value": 42
     },
     "price": 2999,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Razer",
+        "merchantSlug": "razer",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.razer.com/gaming-laptops/razer-blade-16",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=Razer+Blade+16+2024",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Desktop replacement that still looks like a work machine.",
+    "linePitch": "Blade 16: Flagship portable gaming and 3D work.",
     "summary": "RTX 4090 mobile, dual-mode OLED, and CNC aluminum. Loud under load; the ceiling for portable gaming and 3D work."
   },
   {
@@ -194,19 +309,29 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 70,
-      "battery": 74,
-      "display": 78,
       "portability": 86,
+      "display": 78,
+      "battery": 74,
       "build": 72,
-      "camera": 66,
       "value": 88
     },
     "price": 799,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=Acer+Swift+Go+14",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Cheap OLED, few compromises.",
-    "summary": "Sub-$800 with an OLED panel and Core Ultra 5. Plastic-heavy but the display and CPU make it a compelling student pick."
+    "linePitch": "Swift Go: Sub-£800 with a real OLED panel.",
+    "summary": "Sub-£800 with an OLED panel and Core Ultra 5. Plastic-heavy but the display and CPU make it a compelling student pick."
   }
 ]

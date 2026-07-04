@@ -10,21 +10,40 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 96,
-      "battery": 84,
-      "display": 98,
       "portability": 82,
+      "display": 98,
+      "battery": 84,
       "build": 94,
-      "camera": 78,
       "value": 52
     },
     "price": 1299,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Apple Store",
+        "merchantSlug": "apple-store",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.apple.com/uk/shop/buy-ipad/ipad-pro",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=iPad+Pro+13+M4",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [
       { "deviceId": "macbook-pro-14-m4-pro", "reason": "Sidecar external display" }
     ],
     "tagline": "Tandem-OLED reference display in a tablet.",
+    "linePitch": "iPad Pro: The tablet flagship. Tandem OLED, M-series silicon.",
     "summary": "M4, 5.1 mm thick, dual-layer OLED. Software still doesn't match the hardware, but it's the best tablet display ever shipped."
   },
   {
@@ -38,19 +57,29 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 86,
-      "battery": 82,
-      "display": 82,
       "portability": 82,
+      "display": 82,
+      "battery": 82,
       "build": 88,
-      "camera": 66,
       "value": 76
     },
     "price": 799,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Apple Store",
+        "merchantSlug": "apple-store",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.apple.com/uk/shop/buy-ipad/ipad-air",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Big Air, mid price.",
+    "linePitch": "iPad Air: Big-screen iPad without the Pro premium.",
     "summary": "M2 and a 13\" LCD in the Air chassis. If you don't need ProMotion or OLED this is the sensible large-screen iPad."
   },
   {
@@ -64,20 +93,39 @@
     "releaseYear": 2025,
     "scores": {
       "performance": 74,
-      "battery": 82,
-      "display": 72,
       "portability": 88,
+      "display": 72,
+      "battery": 82,
       "build": 78,
-      "camera": 58,
       "value": 90
     },
     "price": 349,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Apple Store",
+        "merchantSlug": "apple-store",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.apple.com/uk/shop/buy-ipad/ipad",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=iPad+A16",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "The default tablet.",
-    "summary": "Non-laminated LCD, no ProMotion, no Apple Intelligence — but nothing else at $349 comes near it for the school-family use case."
+    "linePitch": "iPad: The default tablet. Cheap, good enough for most.",
+    "summary": "Non-laminated LCD, no ProMotion, no Apple Intelligence — but nothing else at £349 comes near it for the school-family use case."
   },
   {
     "id": "samsung-galaxy-tab-s10-plus",
@@ -90,19 +138,29 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 84,
-      "battery": 82,
-      "display": 92,
       "portability": 76,
+      "display": 92,
+      "battery": 82,
       "build": 88,
-      "camera": 72,
       "value": 66
     },
     "price": 999,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Samsung UK",
+        "merchantSlug": "samsung-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.samsung.com/uk/tablets/galaxy-tab-s10/",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "The Android tablet flagship.",
+    "linePitch": "Galaxy Tab S: Flagship Android tablet with S Pen in the box.",
     "summary": "Dimensity 9300+, 120Hz AMOLED, S Pen in the box, IP68. DeX mode makes it a legitimate part-time laptop."
   },
   {
@@ -116,19 +174,38 @@
     "releaseYear": 2024,
     "scores": {
       "performance": 84,
-      "battery": 84,
-      "display": 90,
       "portability": 78,
+      "display": 90,
+      "battery": 84,
       "build": 88,
-      "camera": 70,
       "value": 58
     },
     "price": 999,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Microsoft UK",
+        "merchantSlug": "microsoft-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.microsoft.com/en-gb/surface/devices/surface-pro-11th-edition",
+        "inStock": true,
+        "updatedAt": ""
+      },
+      {
+        "merchant": "Amazon UK",
+        "merchantSlug": "amazon-uk",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://www.amazon.co.uk/s?k=Surface+Pro+11",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Windows on ARM, tablet-first.",
+    "linePitch": "Surface Pro: Windows tablet-first with detachable keyboard.",
     "summary": "OLED option, Snapdragon X Elite, Copilot+ features. Keyboard and pen still sold separately."
   },
   {
@@ -142,19 +219,29 @@
     "releaseYear": 2023,
     "scores": {
       "performance": 52,
-      "battery": 94,
-      "display": 68,
       "portability": 86,
+      "display": 68,
+      "battery": 94,
       "build": 72,
-      "camera": 40,
       "value": 74
     },
     "price": 599,
-    "currency": "USD",
+    "currency": "GBP",
     "priceHistory": [],
-    "offers": [],
+    "offers": [
+      {
+        "merchant": "Boox Shop",
+        "merchantSlug": "boox-shop",
+        "price": null,
+        "currency": "GBP",
+        "url": "https://shop.boox.com/products/tab-ultra-c",
+        "inStock": true,
+        "updatedAt": ""
+      }
+    ],
     "pairs": [],
     "tagline": "Full Android on colour e-paper.",
+    "linePitch": "Boox Tab: Colour e-ink tablet running full Android.",
     "summary": "A niche pick — colour Kaleido e-ink, week-long battery, Google Play. Not a general-purpose tablet, but the best reader-tablet hybrid."
   }
 ]

@@ -1,49 +1,63 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { Category, Device, Preset, WeightVector } from '../data/schema';
-import { AXES, AXIS_LABEL } from '../data/schema';
+import type { Category, Device, Ecosystem, Persona, Preset, WeightVector } from '../data/schema';
+import { AXES } from '../data/schema';
+import { DEFAULT_PERSONA, PERSONAS } from '../data/personas';
 import { rankDevices, type RankedDevice } from '../lib/scoring';
-import { applyFilters, emptyFilter, facetsFor, type FilterState } from '../lib/facets';
+import { applyFilters, countActiveFilters, emptyFilter, facetsFor, type FilterState } from '../lib/facets';
 import { formatEcosystem, formatPrice } from '../lib/format';
+import { href } from '../lib/href';
+import { HexIcon } from './HexIcon';
+import { Sparkline } from './Sparkline';
+import { CategoryIcon } from './CategoryIcon';
 import { MixerSheet } from './MixerSheet';
+import { MoreFiltersSheet } from './MoreFiltersSheet';
 import { DetailSheet } from './DetailSheet';
 import { CompareSheet } from './CompareSheet';
 
 export interface BoardProps {
-  devices: Device[]; // scoped pool (filtered by category server-side)
-  category: Category | 'all';
-  initialWeights: WeightVector;
-  presets: Preset[]; // for the mixer preset shortcuts
+  /** All devices — filtering happens inside the island (mixer + tri-state). */
+  devices: Device[];
+  presets: Preset[];
+  initialPersonaId?: Persona['id'];
+  initialCategory?: Category | 'all';
+  /** Set from an SEO landing route so the chip lights up. */
   activePresetSlug?: string;
-  /** Passed only for display in the toolbar (e.g. "Best laptops for students"). */
-  headline?: string;
 }
 
 /**
- * Root client island. Everything the user can interact with lives inside
- * this component or its sheets. The Astro page is otherwise fully static.
- *
- * URL state: the current weights are mirrored to the URL as `?w=…` so a
- * shared link opens the board in the exact configuration the user saw.
- * Filters and selections are session-only by design (they'd bloat the URL).
+ * Root client island. Persona chips at the top select a weight vector,
+ * mixer sheet lets you nudge sliders + change category/ecosystem, and
+ * a sticky bottom bar reveals the mixer on tap. Detail + Compare sheets
+ * slide up over the board.
  */
 export function Board({
   devices,
-  category,
-  initialWeights,
-  presets,
-  activePresetSlug,
-  headline,
+  presets: _presets,
+  initialPersonaId,
+  initialCategory = 'all',
+  activePresetSlug: _activePresetSlug,
 }: BoardProps) {
-  const [weights, setWeights] = useState<WeightVector>(initialWeights);
-  const [filter, setFilter] = useState<FilterState>(emptyFilter());
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [openSheet, setOpenSheet] = useState<'mixer' | 'detail' | 'compare' | null>(null);
-  const [detailId, setDetailId] = useState<string | null>(null);
+  const initialPersona =
+    PERSONAS.find((p) => p.id === initialPersonaId) ?? DEFAULT_PERSONA;
 
-  // Sync weights → URL (?w=perf:3,batt:2). Deterministic, human-readable.
+  const [personaId, setPersonaId] = useState<Persona['id']>(initialPersona.id);
+  const [weights, setWeights] = useState<WeightVector>(initialPersona.weights);
+  const [filter, setFilter] = useState<FilterState>({
+    ...emptyFilter(),
+    category: initialCategory,
+  });
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [sheet, setSheet] = useState<'mixer' | 'more' | 'detail' | 'compare' | null>(null);
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  // Mirror weights to the URL as ?w=… so a link restores the exact
+  // ranking. Compact encoding (perf:60,batt:60,…).
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const compact = AXES.filter((a) => (weights[a] ?? 0) > 0)
+    const compact = AXES.filter((a) => (weights[a] ?? 0) !== 60)
       .map((a) => `${a.slice(0, 4)}:${weights[a]}`)
       .join(',');
     const url = new URL(window.location.href);
@@ -52,10 +66,7 @@ export function Board({
     window.history.replaceState(null, '', url.toString());
   }, [weights]);
 
-  // Facets are recomputed against the *unfiltered* category pool so counts
-  // don't collapse as the user narrows down.
-  const facets = useMemo(() => facetsFor(category), [category]);
-
+  const facets = useMemo(() => facetsFor(filter.category), [filter.category]);
   const filteredPool = useMemo(() => applyFilters(devices, filter), [devices, filter]);
   const ranked: RankedDevice[] = useMemo(
     () => rankDevices(filteredPool, weights),
@@ -67,33 +78,11 @@ export function Board({
     [selectedIds, devices],
   );
 
-  function toggleBrand(brand: string) {
-    setFilter((f) => ({
-      ...f,
-      brands: f.brands.includes(brand) ? f.brands.filter((b) => b !== brand) : [...f.brands, brand],
-      // clear lines when brand changes so we never end up with an orphan filter
-      lines: f.lines.filter((line) =>
-        facets.brands
-          .find((br) => br.brand === brand)
-          ?.lines.includes(line) ?? false,
-      ),
-    }));
-  }
-
-  function toggleLine(line: string) {
-    setFilter((f) => ({
-      ...f,
-      lines: f.lines.includes(line) ? f.lines.filter((l) => l !== line) : [...f.lines, line],
-    }));
-  }
-
-  function toggleEcosystem(eco: string) {
-    setFilter((f) => ({
-      ...f,
-      ecosystems: f.ecosystems.includes(eco as any)
-        ? f.ecosystems.filter((e) => e !== eco)
-        : ([...f.ecosystems, eco] as any),
-    }));
+  function selectPersona(id: Persona['id']) {
+    const p = PERSONAS.find((x) => x.id === id);
+    if (!p) return;
+    setPersonaId(id);
+    setWeights(p.weights);
   }
 
   function toggleSelect(id: string) {
@@ -104,112 +93,51 @@ export function Board({
 
   function openDetail(id: string) {
     setDetailId(id);
-    setOpenSheet('detail');
+    setSheet('detail');
   }
 
-  // Which brands' line chips should be shown: only brands that are currently
-  // selected as filters. Otherwise the chip row explodes.
-  const linesForActiveBrands = useMemo(() => {
-    if (filter.brands.length === 0) return [];
-    return facets.brands
-      .filter((b) => filter.brands.includes(b.brand))
-      .flatMap((b) => b.lines);
-  }, [filter.brands, facets.brands]);
+  const activePersona = PERSONAS.find((p) => p.id === personaId) ?? DEFAULT_PERSONA;
+  const activeFilters = countActiveFilters(filter);
+  const totalDevices = devices.length;
 
   return (
     <section className="board">
-      <div className="board-toolbar container">
-        <span className="toolbar-label">{headline ?? 'Ranked'}</span>
-        <span className="mono" style={{ color: 'var(--ink-3)', fontSize: 12 }}>
-          {ranked.length} / {devices.length} devices
+      <div className="container board-meta">
+        <span className="mono board-meta-count">
+          {totalDevices} RANKED · LIVE SCORES
         </span>
-        <div className="spacer" />
-        <button className="btn ghost small" onClick={() => setOpenSheet('mixer')} type="button">
-          Weight mixer
-        </button>
-        <button
-          className="btn small"
-          onClick={() => {
-            setWeights(initialWeights);
-            setFilter(emptyFilter());
-          }}
-          type="button"
-          title="Reset weights and filters"
-        >
-          Reset
-        </button>
-      </div>
-
-      <div className="chip-row container" role="group" aria-label="Filters">
-        {facets.brands.map((b) => (
-          <button
-            key={b.brand}
-            type="button"
-            className="chip"
-            data-active={filter.brands.includes(b.brand)}
-            onClick={() => toggleBrand(b.brand)}
-          >
-            {b.brand} <span className="count">{b.count}</span>
-          </button>
-        ))}
-        {linesForActiveBrands.length > 0 && (
-          <>
-            <span
-              aria-hidden
-              style={{
-                width: 1,
-                height: 22,
-                background: 'var(--rule-strong)',
-                alignSelf: 'center',
-              }}
-            />
-            {linesForActiveBrands.map((line) => (
-              <button
-                key={line}
-                type="button"
-                className="chip"
-                data-active={filter.lines.includes(line)}
-                data-accent="true"
-                onClick={() => toggleLine(line)}
-              >
-                {line}
-              </button>
-            ))}
-          </>
-        )}
-        {facets.ecosystems.length > 1 && (
-          <>
-            <span
-              aria-hidden
-              style={{
-                width: 1,
-                height: 22,
-                background: 'var(--rule-strong)',
-                alignSelf: 'center',
-              }}
-            />
-            {facets.ecosystems.map((e) => (
-              <button
-                key={e.ecosystem}
-                type="button"
-                className="chip"
-                data-active={filter.ecosystems.includes(e.ecosystem)}
-                onClick={() => toggleEcosystem(e.ecosystem)}
-              >
-                {formatEcosystem(e.ecosystem)} <span className="count">{e.count}</span>
-              </button>
-            ))}
-          </>
-        )}
       </div>
 
       <div className="container">
+        <div
+          className="persona-row"
+          role="tablist"
+          aria-label="Persona presets"
+        >
+          {PERSONAS.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              role="tab"
+              aria-selected={p.id === personaId}
+              className="persona-chip"
+              data-active={p.id === personaId}
+              onClick={() => selectPersona(p.id)}
+              title={p.blurb}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="container board-list-wrap">
         {ranked.length === 0 ? (
           <div className="empty">No devices match these filters.</div>
         ) : (
           <ul className="board-list">
             {ranked.map((row) => (
-              <BoardRow
+              <BoardCard
                 key={row.device.id}
                 row={row}
                 selected={selectedIds.includes(row.device.id)}
@@ -221,15 +149,12 @@ export function Board({
         )}
       </div>
 
-      {selected.length > 0 && (
+      {mounted && selected.length >= 2 && (
         <div className="compare-tray" role="status">
-          <span>
-            Compare {selected.length}
-            {selected.length < 2 ? ' (pick ≥2)' : ''}
-          </span>
-          <div className="list">
+          <span>Compare {selected.length}</span>
+          <div className="compare-tray-list">
             {selected.map((d) => (
-              <span className="pill" key={d.id}>
+              <span className="compare-pill" key={d.id}>
                 {d.name}
                 <button
                   type="button"
@@ -241,107 +166,157 @@ export function Board({
               </span>
             ))}
           </div>
-          <button
-            type="button"
-            className="go"
-            disabled={selected.length < 2}
-            onClick={() => setOpenSheet('compare')}
-          >
+          <button type="button" className="compare-go" onClick={() => setSheet('compare')}>
             Compare →
           </button>
         </div>
       )}
 
-      {openSheet === 'mixer' && (
+      <div className="sticky-mixer-wrap">
+        <div className="container">
+          <button
+            type="button"
+            className="sticky-mixer-btn"
+            onClick={() => setSheet('mixer')}
+            aria-label="Open mixer and filters"
+          >
+            <span className="cog" aria-hidden>⚙</span>
+            <span>MIXER &amp; FILTERS · {activePersona.label.toUpperCase()}</span>
+            {activeFilters > 0 && <span className="badge-count">{activeFilters}</span>}
+          </button>
+        </div>
+      </div>
+
+      {sheet === 'mixer' && (
         <MixerSheet
           weights={weights}
-          onChange={setWeights}
-          onClose={() => setOpenSheet(null)}
-          presets={presets}
-          activePresetSlug={activePresetSlug}
+          onChangeWeights={setWeights}
+          category={filter.category}
+          onChangeCategory={(c) => setFilter((f) => ({ ...f, category: c }))}
+          ecosystems={filter.ecosystems}
+          onToggleEcosystem={(e) =>
+            setFilter((f) => ({
+              ...f,
+              ecosystems: f.ecosystems.includes(e)
+                ? f.ecosystems.filter((x) => x !== e)
+                : [...f.ecosystems, e],
+            }))
+          }
+          availableEcosystems={facets.ecosystems as { ecosystem: Ecosystem; count: number }[]}
+          onOpenMoreFilters={() => setSheet('more')}
+          onClose={() => setSheet(null)}
+          resultsCount={ranked.length}
         />
       )}
 
-      {openSheet === 'detail' && detailId && (
+      {sheet === 'more' && (
+        <MoreFiltersSheet
+          brands={facets.brands}
+          state={filter.brands}
+          onChange={(brands) => setFilter((f) => ({ ...f, brands }))}
+          onBack={() => setSheet('mixer')}
+          onClose={() => setSheet(null)}
+          resultsCount={ranked.length}
+        />
+      )}
+
+      {sheet === 'detail' && detailId && (
         <DetailSheet
           device={devices.find((d) => d.id === detailId)!}
           weights={weights}
+          rank={ranked.findIndex((r) => r.device.id === detailId) + 1}
           allDevices={devices}
-          onClose={() => setOpenSheet(null)}
+          onClose={() => setSheet(null)}
           onOpenDevice={(id) => setDetailId(id)}
         />
       )}
 
-      {openSheet === 'compare' && (
+      {sheet === 'compare' && (
         <CompareSheet
           devices={selected}
           weights={weights}
-          onClose={() => setOpenSheet(null)}
-          onRemove={(id) => toggleSelect(id)}
+          onClose={() => setSheet(null)}
+          onRemove={toggleSelect}
         />
       )}
     </section>
   );
 }
 
-interface BoardRowProps {
+interface CardProps {
   row: RankedDevice;
   selected: boolean;
   onOpen: () => void;
   onToggleSelect: () => void;
 }
 
-function BoardRow({ row, selected, onOpen, onToggleSelect }: BoardRowProps) {
+function BoardCard({ row, selected, onOpen, onToggleSelect }: CardProps) {
   const { device, score, rank } = row;
 
   return (
-    <li
-      className="board-row"
-      data-selected={selected}
-      onClick={onOpen}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onOpen();
-        }
-      }}
-    >
-      <span className="rank mono">
-        {rank.toString().padStart(2, '0')}
-      </span>
-      <div className="id-block">
-        <div className="name">{device.name}</div>
-        <div className="meta">
-          <span>{device.brand}</span>
-          <span>·</span>
-          <span>{formatEcosystem(device.ecosystem)}</span>
-          <span>·</span>
-          <span>{device.releaseYear}</span>
-        </div>
-      </div>
-      <div className="axis-mini" aria-hidden>
-        <span style={{ width: `${score}%` }} />
-      </div>
-      <div className="price mono">{formatPrice(device.price, device.currency)}</div>
-      <div className="score mono">{score.toFixed(1)}</div>
-      <button
-        type="button"
-        className="compare-toggle"
-        data-active={selected}
-        onClick={(e) => {
-          e.stopPropagation();
-          onToggleSelect();
+    <li>
+      <div
+        className="device-card"
+        data-selected={selected}
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onOpen();
+          }
         }}
-        aria-pressed={selected}
-        aria-label={selected ? `Remove ${device.name} from compare` : `Add ${device.name} to compare`}
+        role="button"
+        tabIndex={0}
       >
-        {selected ? '✓ Compare' : '+ Compare'}
-      </button>
+        <div className="dc-rank">{rank}</div>
+        <div className="dc-hex">
+          <HexIcon scores={device.scores} size={48} />
+        </div>
+        <div className="dc-name-block">
+          <div className="dc-name">{device.name}</div>
+          <div className="dc-meta">
+            <CategoryIcon category={device.category} />
+            <span className="dc-brand">{device.brand}</span>
+            <span aria-hidden>·</span>
+            <span>{device.line}</span>
+            <span aria-hidden>·</span>
+            <span>{formatEcosystem(device.ecosystem)}</span>
+          </div>
+        </div>
+        <button
+          type="button"
+          className="dc-vs"
+          data-active={selected}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleSelect();
+          }}
+          aria-pressed={selected}
+          aria-label={selected ? `Remove ${device.name} from compare` : `Add ${device.name} to compare`}
+        >
+          VS
+        </button>
+        <div className="dc-score-block">
+          <div className="dc-score">{score.toFixed(1)}</div>
+          <div className="dc-bar" aria-hidden>
+            <span style={{ width: `${Math.max(0, Math.min(100, score))}%` }} />
+          </div>
+        </div>
+        <div className="dc-spark" aria-hidden>
+          <Sparkline history={device.priceHistory} currentPrice={device.price} />
+        </div>
+        <div className="dc-price mono">
+          {formatPrice(device.price, device.currency)}
+        </div>
+        <a
+          className="dc-permalink"
+          href={href(`/device/${device.id}`)}
+          aria-label={`Permalink for ${device.name}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          ↗
+        </a>
+      </div>
     </li>
   );
 }
-
-// Re-export the axis label constants so consuming components have one import
-export { AXIS_LABEL };
