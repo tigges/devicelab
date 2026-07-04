@@ -1,7 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { DEVICES, slugify } from '../../data/devices';
-import { PRESETS } from '../../data/presets';
 import { AXIS_META } from '../../data/schema';
 import { LINES } from '../../data/lines';
 import { amazonUrl, mfgUrl } from '../../data/merchants';
@@ -9,7 +8,6 @@ import { formatGBP } from '../../lib/format';
 import { rankDevices } from '../../lib/scoring';
 import { personaById } from '../../data/personas';
 import { TrackPriceForm } from '../../components/TrackPriceForm';
-import { href } from '../../lib/href';
 
 export function getStaticPaths() {
   return DEVICES.map((device) => ({
@@ -23,7 +21,6 @@ const overall = personaById('Overall')!;
 const peers = DEVICES.filter((d) => d.cat === device.cat);
 const ranking = rankDevices(peers, overall.weights).find((r) => r.device.id === device.id);
 const lineMeta = device.line ? LINES[device.brand]?.[device.line] : undefined;
-const relatedPresets = PRESETS.filter((p) => p.category === device.cat || p.category === 'All');
 const mfg = mfgUrl(device);
 
 const jsonLd = {
@@ -115,19 +112,10 @@ const jsonLd = {
     <TrackPriceForm client:idle deviceId={String(device.id)} />
   </section>
 
-  <section class="dl-container" style="padding: 8px 16px 20px;">
+  <section class="dl-container" style="padding: 8px 16px 60px;">
     <h2 style="margin-bottom: 8px;">Pairs well with</h2>
     <div class="dl-pairs">
       {device.pairs.map((pr) => <div class="dl-pair-card">{pr}</div>)}
-    </div>
-  </section>
-
-  <section class="dl-container" style="padding: 8px 16px 60px;">
-    <h2 style="margin-bottom: 8px;">See it ranked</h2>
-    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-      {relatedPresets.map((p) => (
-        <a href={href(`/${p.slug}`)} class="dl-chip">{p.title}</a>
-      ))}
     </div>
   </section>
 </Base>

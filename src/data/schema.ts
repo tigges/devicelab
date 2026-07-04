@@ -78,17 +78,6 @@ export interface Persona {
   blurb: string;
 }
 
-/** SEO landing preset: persona + optional category filter. */
-export interface Preset {
-  slug: string;
-  title: string;
-  metaTitle: string;
-  metaDescription: string;
-  personaId: PersonaId;
-  category: Category | 'All';
-  blurb: string;
-}
-
 // ─── Tri-state brand filter ──────────────────────────────────────────────
 
 export type BrandState = 'in' | 'out';

@@ -1,9 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { PRESETS } from '../data/presets';
 import { DEVICES } from '../data/devices';
 import { Board } from '../components/Board';
-import { href } from '../lib/href';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -28,20 +26,4 @@ const jsonLd = {
   </section>
 
   <Board client:load devices={DEVICES} />
-
-  <section class="dl-container" style="padding-top: 20px;">
-    <h2 style="margin-bottom: 6px;">SEO landing pages</h2>
-    <p style="color: #5F6368; margin-top: 0; font-size: 13px;">
-      Each preset is a fixed URL that preloads a persona and category filter.
-    </p>
-  </section>
-  <div class="dl-preset-grid">
-    {PRESETS.map((preset) => (
-      <a class="dl-preset-card" href={href(`/${preset.slug}`)}>
-        <div class="cat">{preset.category.toUpperCase()}</div>
-        <h3>{preset.title}</h3>
-        <p>{preset.blurb}</p>
-      </a>
-    ))}
-  </div>
 </Base>
