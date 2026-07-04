@@ -4,6 +4,7 @@ import { PRESETS } from '../data/presets';
 import { DEVICES } from '../data/devices';
 import { Board } from '../components/Board';
 import { rankDevices } from '../lib/scoring';
+import { href } from '../lib/href';
 
 export function getStaticPaths() {
   return PRESETS.map((preset) => ({
@@ -50,7 +51,7 @@ const jsonLd = {
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px;">
       {top3.map((r, i) => (
         <a
-          href={`/device/${r.device.id}`}
+          href={href(`/device/${r.device.id}`)}
           class="chip"
           data-accent="true"
           style="border-color: var(--accent); color: var(--ink);"

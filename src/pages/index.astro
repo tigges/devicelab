@@ -4,6 +4,7 @@ import { PRESETS } from '../data/presets';
 import { DEVICES } from '../data/devices';
 import { Board } from '../components/Board';
 import { rankDevices } from '../lib/scoring';
+import { href } from '../lib/href';
 
 // Home board is category-agnostic and uses equal weights. It's the "index"
 // view of the whole catalog — good for lay users who don't yet know what
@@ -40,7 +41,7 @@ const jsonLd = {
     <h2 style="margin-bottom: 12px;">Popular presets</h2>
     <div class="preset-grid">
       {PRESETS.map((preset) => (
-        <a class="preset-card" href={`/${preset.slug}`}>
+        <a class="preset-card" href={href(`/${preset.slug}`)}>
           <div class="cat">{preset.category.toUpperCase()}</div>
           <h3>{preset.title}</h3>
           <p>{preset.blurb}</p>
@@ -70,7 +71,7 @@ const jsonLd = {
     <ol class="mono" style="padding-left: 20px;">
       {topFew.map((r) => (
         <li>
-          <a href={`/device/${r.device.id}`}>{r.device.name}</a>
+          <a href={href(`/device/${r.device.id}`)}>{r.device.name}</a>
           &nbsp;— <span style="color: var(--ink-3);">{r.score.toFixed(1)}</span>
         </li>
       ))}

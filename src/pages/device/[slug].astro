@@ -6,6 +6,7 @@ import { AXES, AXIS_LABEL } from '../../data/schema';
 import { formatEcosystem, formatPrice } from '../../lib/format';
 import { rankDevices } from '../../lib/scoring';
 import { TrackPriceForm } from '../../components/TrackPriceForm';
+import { href } from '../../lib/href';
 
 export function getStaticPaths() {
   return DEVICES.map((device) => ({
@@ -121,13 +122,13 @@ const jsonLd = {
               <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center;">
                 <div>
                   <strong>
-                    <a href={`/device/${paired.id}`}>{paired.name}</a>
+                    <a href={href(`/device/${paired.id}`)}>{paired.name}</a>
                   </strong>
                   <div style="color: var(--ink-3); font-size: 13px; margin-top: 2px;">
                     {p.reason}
                   </div>
                 </div>
-                <a href={`/device/${paired.id}`} class="btn ghost small">Open →</a>
+                <a href={href(`/device/${paired.id}`)} class="btn ghost small">Open →</a>
               </div>
             </li>
           );
@@ -144,7 +145,7 @@ const jsonLd = {
     </p>
     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
       {relatedPresets.map((p) => (
-        <a href={`/${p.slug}`} class="chip" data-accent="true">
+        <a href={href(`/${p.slug}`)} class="chip" data-accent="true">
           {p.title}
         </a>
       ))}

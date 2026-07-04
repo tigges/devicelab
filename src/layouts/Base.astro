@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { href } from '../lib/href';
 
 export interface Props {
   title: string;
@@ -33,7 +34,7 @@ const canonicalHref = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Ast
     <meta property="og:url" content={canonicalHref} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#FF5C00" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
     {jsonLd && (
       <script
         type="application/ld+json"
@@ -44,12 +45,12 @@ const canonicalHref = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Ast
   <body>
     <header class="site-header">
       <div class="container row">
-        <a class="logo" href="/"><span class="dot" aria-hidden></span>DeviceLab</a>
+        <a class="logo" href={href('/')}><span class="dot" aria-hidden></span>DeviceLab</a>
         <nav>
-          <a href="/best-laptops-for-students">Laptops</a>
-          <a href="/best-phones-for-photography">Phones</a>
-          <a href="/best-tablets-for-drawing">Tablets</a>
-          <a href="/about">About</a>
+          <a href={href('/best-laptops-for-students')}>Laptops</a>
+          <a href={href('/best-phones-for-photography')}>Phones</a>
+          <a href={href('/best-tablets-for-drawing')}>Tablets</a>
+          <a href={href('/about')}>About</a>
         </nav>
       </div>
     </header>

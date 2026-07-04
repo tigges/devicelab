@@ -1,0 +1,73 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      # Also deploy from the port branch so the site is live before the
+      # PR merges. Remove once merged.
+      - cursor/devicelab-astro-port-1a74
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          # Astro 7 needs registerHooks from node:module (≥ 22.15)
+          node-version: '22.22.2'
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # GitHub Pages is static-only. Astro would refuse to build a
+      # `prerender = false` endpoint without an adapter, so the workflow
+      # removes it. The endpoint remains committed for the Cloudflare
+      # deploy path.
+      - name: Strip dynamic endpoint (static-only host)
+        run: rm -f src/pages/api/track-price.ts && rmdir --ignore-fail-on-non-empty src/pages/api || true
+
+      - name: Build (Pages target)
+        env:
+          DEPLOY_TARGET: pages
+          # Derive the base path from the repo name so a fork automatically
+          # picks up its own subpath.
+          ASTRO_BASE: /${{ github.event.repository.name }}
+          ASTRO_SITE: https://${{ github.repository_owner }}.github.io
+        run: pnpm build
+
+      - name: Add .nojekyll (skip GH Pages Jekyll pipeline)
+        run: touch dist/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
