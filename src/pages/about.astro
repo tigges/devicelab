@@ -10,67 +10,125 @@ import Base from '../layouts/Base.astro';
     <div class="dl-eyebrow-hero">DEVICELAB / ABOUT</div>
     <h1>The device leaderboard <br />you can weigh yourself.</h1>
     <p class="dl-blurb">
-      No sponsored order. Six axes, deterministic scoring, and a mixer that
-      recomputes the board instantly.
+      No sponsored order. Six axes, deterministic scoring, and a mixer
+      that recomputes the board instantly.
     </p>
   </section>
 
   <section class="dl-container" style="padding: 12px 16px 40px; max-width: 68ch;">
-    <p style="color: #2C2C2C; margin: 8px 0 24px;">
-      DeviceLab is a small, opinionated device ranker. We score every device
-      on six axes and let you weight them yourself. This page is the
-      contract for how that works.
+    <h2>Why we built this</h2>
+    <p>
+      Buying a laptop, tablet, or desktop in 2026 means wading through
+      a hundred near-identical reviews, each with a different score on
+      a different scale, all optimised for search-engine ranking rather
+      than helping you decide. The mix that matters — how much
+      performance vs. how much battery vs. how much price — is
+      different for every person, and no static "Top 10 laptops of the
+      year" list can capture that.
+    </p>
+    <p>
+      DeviceLab flips it: <strong>you</strong> tell us what matters, we
+      tell you which device wins under your mix. Six axes,
+      deterministic scoring, and a live ranking that recomputes as you
+      nudge the sliders. There is no editorial "we think the X is
+      best." The scoring engine is a pure function of your weights and
+      the axis scores; you can read it in
+      <span class="mono">src/lib/scoring.ts</span> if you want.
     </p>
 
-    <h2>Scoring</h2>
+    <h2>How we score</h2>
     <ul>
       <li>Six axes: performance, portability, display, battery, build, value.</li>
-      <li>Each axis is 0–100.</li>
-      <li>The composite is a normalised weighted mean of your weights ×
-        the device's axis scores.</li>
-      <li>Value is derived from performance-per-£ min-max normalised across
-        the whole catalogue — not editorial.</li>
-      <li>Ties break on <span class="mono">value</span>, then alphabetically.</li>
+      <li>Each device is rated 0–100 per axis.</li>
       <li>
-        <strong>Nothing about the ranking depends on price feeds, affiliate
-        offers, or sponsorship.</strong> If a merchant tries to pay for a
-        higher rank, the answer is no. Ingestion sits in a separate module
-        with a hard boundary to the scoring engine.
+        Value isn't editorial — it's derived from
+        performance-per-£, min-max normalised across the whole catalogue
+        to 30–100. Better perf per pound = higher value score.
+        Automatic.
       </li>
+      <li>The composite is a normalised weighted mean of your weights × the axis scores.</li>
+      <li>Ties break on value, then alphabetically.</li>
+      <li>
+        Rank deltas (▲/▼) show how a device jumps or drops when you
+        change weights — useful for stress-testing your priorities
+        against the shortlist.
+      </li>
+    </ul>
+
+    <h2>How it's funded</h2>
+    <p>
+      DeviceLab is funded by affiliate commission. Some outbound
+      retail links — Amazon (UK + US) and, once approved, manufacturer
+      links via Awin — are tagged with our affiliate IDs. If you click
+      through and buy something, we earn a small percentage from the
+      retailer, at no cost to you. Full detail on the
+      <a href="/disclosure/">affiliate disclosure</a> page.
+    </p>
+    <p>
+      <strong>Nothing about the ranking depends on that.</strong> The
+      code separates scoring from monetisation by design: the scoring
+      module has zero imports from the retail-links module. A merchant
+      offering more commission for a higher rank would have to
+      convince us to change the scoring code, which we won't.
+    </p>
+
+    <h2>What we don't do</h2>
+    <ul>
+      <li>No sponsored placements or "featured" positions.</li>
+      <li>No paid inclusion in the catalogue.</li>
+      <li>No editorial partnerships that touch the score.</li>
+      <li>No third-party analytics or advertising cookies. There is no Google Analytics, no Meta Pixel.</li>
+      <li>No email newsletter. "Track price" sends one email when the target hits, then stops.</li>
     </ul>
 
     <h2>Personas</h2>
     <p>
-      Six personas — Overall / Value / Creator / Gamer / Student / Business —
-      are named weight vectors that prewire the mixer to what a specific
-      shopper typically cares about. You can still slide any axis to override
-      one; the moment you do, the persona flips to "Custom".
+      The six personas — Overall / Value / Creator / Gamer / Student /
+      Business — are named weight vectors that prewire the mixer to
+      what a specific shopper typically cares about. They're a
+      starting point, not the answer: slide any axis to override, and
+      the persona flips to "Custom" the moment you touch it.
     </p>
 
-    <h2>Retail links + commission</h2>
+    <h2>Lines and pairings</h2>
     <p>
-      Buy buttons link to Amazon UK and (where available) the manufacturer's
-      own store. Some of those links may earn us a commission — <strong>they
-      never affect scores or ranking</strong>. Offers are sorted by delivered
-      price only. Outbound clicks are logged so we can see which retailers
-      actually convert and prioritise partnerships accordingly.
+      When you filter to a single brand, a line strip appears
+      underneath the personas (ThinkPad, Yoga, Legion, IdeaPad, and so
+      on). Each line has editorial context — "Business-grade: legendary
+      keyboards, MIL-SPEC durability" — and a suggested persona weight
+      mix that a user shopping that line probably wants. One tap and
+      the mixer flips to those weights.
     </p>
 
     <h2>Price tracking</h2>
     <p>
-      "Track price" opens an email capture that stores (email, device, target
-      price) in Cloudflare KV. When the price pipeline lands, a scheduled job
-      will diff incoming price points against saved targets and send at most
-      one email per trigger. No newsletter.
+      "Track price" opens a one-time email capture that stores
+      (email, device, target price) in Cloudflare KV. When the price
+      pipeline lands, a scheduled job will diff incoming price points
+      against saved targets and send at most one email per trigger.
+      Not a newsletter. Full detail on the
+      <a href="/privacy/">privacy page</a>.
+    </p>
+
+    <h2>Who runs this</h2>
+    <p>
+      DeviceLab is built and maintained by an independent operator —
+      not a media company, not an agency. If you want to reach us for
+      corrections, additions, or partnership queries, the
+      <a href="/contact/">contact page</a> has an inbox.
     </p>
 
     <h2>Roadmap markers in the code</h2>
-    <p>Four integration points are stubbed and marked in the codebase:</p>
+    <p>Four integration points are stubbed and marked:</p>
     <ul class="mono" style="font-size: 13px;">
-      <li>TODO(ingestion) — where the n8n price job writes offers + real priceHistory.</li>
+      <li>TODO(ingestion) — where the price-feed job writes offers + real priceHistory.</li>
       <li>TODO(affiliate) — where merchant links get GTIN-matched deep links + tracking params.</li>
       <li>TODO(alerts) — the scheduled consumer that emails matches on target prices.</li>
       <li>TODO(analytics) — swap CLICK_KV for Cloudflare Analytics Engine for SQL-shaped querying.</li>
     </ul>
+    <p>
+      All four are decoupled from the scoring engine — none of them can
+      influence the ranking.
+    </p>
   </section>
 </Base>

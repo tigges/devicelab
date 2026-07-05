@@ -79,8 +79,23 @@ const catHref = (key: string) =>
       <slot />
     </main>
     <footer class="dl-site-footer">
-      <span>© DeviceLab · Deterministic scoring · Independent</span>
-      <span>v0.4 · prototype port</span>
+      <div class="dl-footer-brand">
+        <span>© DeviceLab · Independent, unpaid rankings</span>
+      </div>
+      <nav class="dl-footer-nav" aria-label="Site links">
+        <a href={href('/about')}>About</a>
+        <span aria-hidden>·</span>
+        <a href={href('/disclosure')}>Disclosure</a>
+        <span aria-hidden>·</span>
+        <a href={href('/privacy')}>Privacy</a>
+        <span aria-hidden>·</span>
+        <a href={href('/terms')}>Terms</a>
+        <span aria-hidden>·</span>
+        <a href={href('/contact')}>Contact</a>
+      </nav>
+      <div class="dl-footer-meta">
+        <span>v0.5</span>
+      </div>
     </footer>
 
     <script is:inline>

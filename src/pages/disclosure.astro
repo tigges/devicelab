@@ -1,0 +1,98 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Affiliate disclosure — DeviceLab"
+  description="Which of our outbound links are affiliate links, who pays us for what, and why it doesn't affect the ranking."
+>
+  <section class="dl-page-header">
+    <div class="dl-eyebrow-hero">DEVICELAB / DISCLOSURE</div>
+    <h1>Affiliate disclosure</h1>
+    <p class="dl-blurb">
+      Which outbound links are affiliate links, who pays us for what,
+      and why it doesn't affect the ranking. Last updated: July 2026.
+    </p>
+  </section>
+
+  <section class="dl-container" style="padding: 12px 16px 40px; max-width: 68ch;">
+    <h2>Short version</h2>
+    <p>
+      Some of the outbound links on device pages are affiliate links.
+      If you click one and buy something, we may earn a commission —
+      at no additional cost to you. That's how we fund the site.
+    </p>
+    <p>
+      <strong>Nothing about the ranking depends on any affiliate
+      relationship.</strong> Devices we don't earn a penny on can and
+      do outrank devices we do earn on. The scoring engine has no
+      access to price, offer, or commission data — enforced in code.
+    </p>
+
+    <h2>Who pays us for what</h2>
+    <ul>
+      <li>
+        <strong>Amazon Associates (UK &amp; US).</strong> We're
+        participants in the Amazon EU Associates Programme
+        (<span class="mono">gtaviai-21</span>) and the Amazon Services LLC
+        Associates Program (<span class="mono">gtaviai-20</span>). Amazon buy
+        buttons carry those tags. We earn a percentage of qualifying
+        sales made after clicking through.
+      </li>
+      <li>
+        <strong>Awin (publisher ID 2972385).</strong> Some
+        manufacturer buttons — Lenovo, Dell, HP, ASUS, MSI, Razer, LG,
+        Samsung, Microsoft, Huawei, Acer, Framework — are wrapped with
+        Awin's affiliate redirector as merchants approve us into their
+        programmes. We earn a per-merchant commission on qualifying
+        sales.
+      </li>
+      <li>
+        <strong>Everything else</strong> — search-URL fallbacks,
+        manufacturer links for brands we're not yet approved for,
+        pair-with cross-sell links — is <em>not</em> affiliate-tagged.
+        No commission, no tracking, standard outbound link.
+      </li>
+    </ul>
+
+    <h2>Why the ranking is safe from this</h2>
+    <p>
+      The DeviceLab codebase separates scoring from monetisation by
+      design:
+    </p>
+    <ul class="mono" style="font-size: 13px;">
+      <li>src/lib/scoring.ts — pure function of axis scores × weights. Zero imports from merchants.</li>
+      <li>src/data/merchants.ts — the affiliate wrapping code. Zero imports from scoring.</li>
+      <li>src/lib/awin.ts — the Awin URL wrapper. Zero imports from anything upstream of the merchant layer.</li>
+    </ul>
+    <p>
+      If a merchant tries to pay for a higher rank, changing that
+      ranking would require altering the scoring module and passing
+      code review. The answer will be no.
+    </p>
+
+    <h2>What we don't do</h2>
+    <ul>
+      <li>Sponsored placements or "featured" positions in the ranking.</li>
+      <li>Paid inclusion in the catalogue.</li>
+      <li>Editorial partnerships that touch the score.</li>
+      <li>Retargeting, remarketing, or ad-tech tracking pixels on any page.</li>
+    </ul>
+
+    <h2>How to spot affiliate links</h2>
+    <p>
+      Every outbound retail button explicitly says which merchant it
+      goes to ("Amazon UK →", "Lenovo store →"). All outbound retail
+      links carry <span class="mono">rel="sponsored noopener"</span> so
+      your browser and search engines can distinguish them from
+      editorial links.
+    </p>
+
+    <h2>Questions</h2>
+    <p>
+      For anything that doesn't fit above — including
+      "how much have you earned from device X" — email us via the
+      <a href="/contact/">contact page</a>. We're happy to answer.
+    </p>
+  </section>
+</Base>

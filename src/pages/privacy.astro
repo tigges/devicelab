@@ -1,0 +1,140 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Privacy — DeviceLab"
+  description="What DeviceLab collects, where it's stored, and how to delete it."
+>
+  <section class="dl-page-header">
+    <div class="dl-eyebrow-hero">DEVICELAB / PRIVACY</div>
+    <h1>Privacy policy</h1>
+    <p class="dl-blurb">
+      Plain-English summary of what we collect, why, and how you can
+      have it deleted. Last updated: July 2026.
+    </p>
+  </section>
+
+  <section class="dl-container" style="padding: 12px 16px 40px; max-width: 68ch;">
+    <h2>Short version</h2>
+    <ul>
+      <li>We don't set analytics or advertising cookies. There is no Google Analytics, Meta Pixel, or similar.</li>
+      <li>We collect two pieces of data, both minimal: <strong>your email if you opt into price alerts</strong>, and <strong>anonymous outbound-click events</strong>.</li>
+      <li>Your IP address is used only to detect country (via a Cloudflare edge header); it's never stored.</li>
+      <li>Every affiliate outbound link is disclosed on the <a href="/disclosure/">disclosure page</a>. We don't share personal data with retailers — Amazon, Awin, and other partners see only the click that came from us.</li>
+      <li>To request deletion of any data we hold about you, email us — details on the <a href="/contact/">contact page</a>.</li>
+    </ul>
+
+    <h2>Who we are</h2>
+    <p>
+      DeviceLab is an independent device-comparison site. See the
+      <a href="/about/">about page</a> for how it's built and funded.
+      Legal contact: see <a href="/contact/">contact</a>.
+    </p>
+
+    <h2>Track-price emails</h2>
+    <p>
+      If you use the "Track price" form on a device page, we store
+      three things:
+    </p>
+    <ul>
+      <li>Your email address (lower-cased).</li>
+      <li>The device id you're tracking.</li>
+      <li>Your target price (if you provided one).</li>
+    </ul>
+    <p>
+      This is stored in a Cloudflare KV namespace (<span class="mono">TRACK_PRICE_KV</span>)
+      with a one-year expiry. We use it for a single purpose: to
+      email you once, when the device hits your target. No newsletter,
+      no marketing. You can request deletion at any time.
+    </p>
+    <p>
+      Legal basis: consent (submitting the form).
+    </p>
+
+    <h2>Click tracking</h2>
+    <p>
+      When you click a "Buy" or "Track price" button, we log the click
+      event to a separate Cloudflare KV namespace
+      (<span class="mono">CLICK_KV</span>) with a 90-day expiry. Each record contains:
+    </p>
+    <ul>
+      <li>Device id, merchant slug (e.g. <span class="mono">amazon-uk</span>), UI source (detail sheet vs. device page).</li>
+      <li>Timestamp and current URL path.</li>
+      <li>Active persona and category filter, if any.</li>
+      <li>Your user-agent string, and the two-letter country code from Cloudflare's <span class="mono">CF-IPCountry</span> header.</li>
+      <li>Your IP address, transiently, only to attribute the click to a country. It is not persisted.</li>
+    </ul>
+    <p>
+      This is used to understand which devices and merchants actually
+      convert, so we can prioritise the ones that matter. It is not
+      shared with third parties. We don't build user profiles from it —
+      records are per-click, not per-visitor.
+    </p>
+    <p>
+      Legal basis: legitimate interest (understanding our own site
+      performance). To object, use the contact form.
+    </p>
+
+    <h2>Region detection</h2>
+    <p>
+      To send you to your local Amazon domain (amazon.co.uk vs
+      amazon.com etc.), we detect your country via the same
+      Cloudflare <span class="mono">CF-IPCountry</span> header and cache the
+      two-letter code in your browser's sessionStorage. It clears when
+      you close the tab. Set <span class="mono">?region=US</span> in any URL to override manually.
+    </p>
+
+    <h2>Third parties</h2>
+    <ul>
+      <li>
+        <strong>Cloudflare</strong> — hosts the site and provides edge
+        geolocation. Their
+        <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">privacy policy</a>
+        applies to traffic they route.
+      </li>
+      <li>
+        <strong>Amazon Associates</strong> — outbound purchase links
+        are tagged with our affiliate ID. Amazon sees the click; we
+        don't share anything additional with them. Their
+        <a href="https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=502584" rel="noopener">privacy notice</a>
+        governs the site you land on.
+      </li>
+      <li>
+        <strong>Awin</strong> — some manufacturer links are wrapped
+        with Awin's affiliate redirector once we're approved for that
+        brand. Same principle: they see the click, not additional
+        personal data.
+      </li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>
+      DeviceLab sets no cookies. We use browser sessionStorage for the
+      region cache and localStorage for a one-bit "you've seen the
+      welcome hint" flag. Both are visible in your browser's
+      developer tools and clearable at will.
+    </p>
+
+    <h2>Data retention</h2>
+    <ul>
+      <li>Track-price records: <strong>1 year</strong> from creation.</li>
+      <li>Click-tracking events: <strong>90 days</strong> from creation.</li>
+      <li>Region cache: cleared when the browser tab closes.</li>
+    </ul>
+
+    <h2>Your rights</h2>
+    <p>
+      Under UK GDPR, you can request access to, correction of, or
+      deletion of any personal data we hold. Email us via the
+      <a href="/contact/">contact page</a>. We'll respond within 30 days.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      If we change this policy in a way that materially affects what
+      we collect or how we use it, we'll update the date at the top.
+      Track-price subscribers get an email on any material change.
+    </p>
+  </section>
+</Base>

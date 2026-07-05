@@ -116,8 +116,14 @@ h3 { font-size: 1rem; }
   font: 500 10.5px 'IBM Plex Mono', monospace;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px 24px; flex-wrap: wrap;
 }
+.dl-footer-nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.dl-footer-nav a { color: #5F6368; }
+.dl-footer-nav a:hover { color: #FF5C00; }
+.dl-footer-brand { flex: 1 1 auto; min-width: 220px; }
+.dl-footer-meta { color: #9AA0A6; }
 
 /* ─── Page hero ───────────────────────────────────────────────────── */
 

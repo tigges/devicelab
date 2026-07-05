@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+
+/**
+ * TODO: replace `CONTACT_EMAIL` with a real address once a custom
+ * domain is in place. Anything at `hello@…` on the site's own domain
+ * signals "publisher" to affiliate networks; a github.io mailto or a
+ * personal Gmail signals "hobby project."
+ */
+const CONTACT_EMAIL = 'hello@devicelab.example';
+---
+
+<Base
+  title="Contact — DeviceLab"
+  description="How to reach DeviceLab for questions, corrections, data requests, or press."
+>
+  <section class="dl-page-header">
+    <div class="dl-eyebrow-hero">DEVICELAB / CONTACT</div>
+    <h1>Get in touch</h1>
+    <p class="dl-blurb">
+      One inbox for everything. We reply as soon as we sensibly can —
+      typically within a couple of business days.
+    </p>
+  </section>
+
+  <section class="dl-container" style="padding: 12px 16px 40px; max-width: 68ch;">
+    <p style="font-size: 1.05rem;">
+      <a href={`mailto:${CONTACT_EMAIL}`} class="mono" style="border-bottom: 2px solid #FF5C00;">
+        {CONTACT_EMAIL}
+      </a>
+    </p>
+
+    <h2>Please email for</h2>
+    <ul>
+      <li>Corrections to specs, scores, prices, or availability.</li>
+      <li>Adding a device or brand that's missing from the catalogue.</li>
+      <li>Affiliate network partnership queries.</li>
+      <li>
+        <strong>Data requests</strong> — access, correction, or
+        deletion of anything we hold about you (see the
+        <a href="/privacy/">privacy policy</a> for what that is).
+        We'll respond within 30 days per UK GDPR.
+      </li>
+      <li>Press &amp; media queries.</li>
+      <li>Bug reports or feature suggestions.</li>
+    </ul>
+
+    <h2>Please don't email for</h2>
+    <ul>
+      <li>Product recommendations — the site is the recommendation.</li>
+      <li>Marketing pitches for SaaS, agencies, or "guest post" schemes.</li>
+      <li>SEO link exchange offers.</li>
+    </ul>
+
+    <h2>What happens next</h2>
+    <p>
+      Every real email gets a personal reply. If you don't hear back
+      within a week, assume it went to spam and try again — nothing
+      is automated on our end.
+    </p>
+  </section>
+</Base>
