@@ -6,6 +6,7 @@ import { BRAND_COLORS, defaultOffers } from '../data/merchants';
 import { explainRank, formatGBP } from '../lib/format';
 import { href } from '../lib/href';
 import { trackClick } from '../lib/track-click';
+import { DEFAULT_REGION, type Region } from '../lib/region';
 import { CatGlyph, PriceChart, Radar, UrgencyBadges } from './atoms';
 import { TrackPriceForm } from './TrackPriceForm';
 import { slugify } from '../data/devices';
@@ -16,6 +17,7 @@ interface Props {
   rank: number;
   personaId: PersonaId | null;
   category: Category | 'All';
+  region?: Region;
   onClose: () => void;
 }
 
@@ -25,11 +27,12 @@ export function DetailSheet({
   rank,
   personaId,
   category,
+  region = DEFAULT_REGION,
   onClose,
 }: Props) {
   const [trackOpen, setTrackOpen] = useState(false);
   const lineMeta = device.line ? LINES[device.brand]?.[device.line] : undefined;
-  const offers = defaultOffers(device);
+  const offers = defaultOffers(device, region);
   const why = explainRank(device, weights, rank);
 
   function onOfferClick(merchantSlug: string) {

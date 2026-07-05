@@ -23,6 +23,7 @@ import {
 import { rankDevices } from '../lib/scoring';
 import { formatGBP } from '../lib/format';
 import { href } from '../lib/href';
+import { DEFAULT_REGION, detectRegion, type Region } from '../lib/region';
 import { CatGlyph, MiniRadar, Spark, UrgencyBadges } from './atoms';
 import { DetailSheet } from './DetailSheet';
 import { CompareSheet } from './CompareSheet';
@@ -80,6 +81,14 @@ export function Board({
 
   const prevRanks = useRef<Record<number, number>>({});
   const [deltas, setDeltas] = useState<Record<number, number>>({});
+
+  // Detected Amazon region — swaps domain + tag + button label on the
+  // buy CTAs. Defaults to UK; upgrades to the visitor's own region on
+  // first mount if `/api/geo` resolves (or `?region=US` in the URL).
+  const [region, setRegion] = useState<Region>(DEFAULT_REGION);
+  useEffect(() => {
+    detectRegion().then(setRegion);
+  }, []);
 
   // Cold-arrival hint: shown to first-timers only. A visitor with `?w=`
   // or `?p=` in the URL (shared link) or the `dl-seen` localStorage
@@ -539,6 +548,7 @@ export function Board({
           rank={detailRank}
           personaId={preset}
           category={filter.cat}
+          region={region}
           onClose={() => setSheet(null)}
         />
       )}

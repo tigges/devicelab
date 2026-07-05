@@ -42,6 +42,7 @@ const jsonLd = {
 };
 
 const clickApiPath = href('/api/track-click');
+const geoApiPath = href('/api/geo');
 ---
 
 <Base
@@ -136,9 +137,16 @@ const clickApiPath = href('/api/track-click');
   </section>
 </Base>
 
-<script is:inline define:vars={{ clickApiPath, deviceId: device.id }}>
-  // Delegated outbound-click tracker for the static device page. Uses
-  // sendBeacon so navigation isn't blocked.
+<script is:inline define:vars={{ clickApiPath, geoApiPath, deviceId: device.id }}>
+  // Delegated outbound-click tracker + Amazon region localisation for
+  // the static device page.
+  //
+  // Click tracking: sendBeacon-first, fetch-keepalive fallback, never
+  // blocks navigation.
+  // Region rewrite: fetches visitor country from /api/geo (with a
+  // sessionStorage cache and a ?region= override), then swaps the
+  // Amazon domain + tag + button label to match. UK visitors and any
+  // country we don't have a tag for get the SSR default (Amazon UK).
   (() => {
     const buy = document.querySelector('.dl-buy[data-device-id]');
     if (!buy) return;
@@ -167,5 +175,66 @@ const clickApiPath = href('/api/track-click');
         }
       } catch { /* noop */ }
     });
+  })();
+
+  (() => {
+    const REGIONS = {
+      GB: { domain: 'amazon.co.uk', tag: 'gtaviai-21', label: 'Amazon UK', slug: 'amazon-uk' },
+      US: { domain: 'amazon.com',   tag: 'gtaviai-20', label: 'Amazon US', slug: 'amazon-us' },
+    };
+    const CACHE_KEY = 'dl-region';
+
+    function rewrite(url, r) {
+      if (!url || url.indexOf('amzn.to/') !== -1) return url;
+      if (url.indexOf(r.domain + '/') !== -1) return url;
+      const asinMatch = url.match(/\/dp\/([A-Z0-9]{10})/);
+      if (asinMatch) return 'https://' + r.domain + '/dp/' + asinMatch[1] + '?tag=' + r.tag;
+      try {
+        const u = new URL(url);
+        if (u.hostname.indexOf('amazon.') !== -1 && u.pathname === '/s') {
+          const k = u.searchParams.get('k');
+          if (k) return 'https://' + r.domain + '/s?k=' + encodeURIComponent(k) + '&tag=' + r.tag;
+        }
+      } catch {}
+      return url;
+    }
+
+    function apply(country) {
+      const r = REGIONS[country];
+      if (!r || country === 'GB') return;
+      const btns = document.querySelectorAll(
+        '.dl-buy-btn[data-merchant-slug^="amazon-"]',
+      );
+      btns.forEach((el) => {
+        const next = rewrite(el.href, r);
+        if (next !== el.href) el.href = next;
+        if (el.textContent.trim().indexOf('Amazon ') === 0) {
+          el.textContent = r.label + ' \u2192';
+        }
+        el.setAttribute('data-merchant-slug', r.slug);
+      });
+    }
+
+    const params = new URLSearchParams(location.search);
+    const override = (params.get('region') || '').toUpperCase();
+    if (REGIONS[override]) {
+      try { sessionStorage.setItem(CACHE_KEY, override); } catch {}
+      apply(override);
+      return;
+    }
+    try {
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached && REGIONS[cached]) { apply(cached); return; }
+    } catch {}
+    fetch(geoApiPath, { headers: { accept: 'application/json' } })
+      .then((r) => r.ok ? r.json() : Promise.reject())
+      .then((body) => {
+        const c = (body && body.country ? body.country : '').toUpperCase();
+        if (REGIONS[c]) {
+          try { sessionStorage.setItem(CACHE_KEY, c); } catch {}
+          apply(c);
+        }
+      })
+      .catch(() => { /* no geo endpoint on this host — keep UK default */ });
   })();
 </script>

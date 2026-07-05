@@ -44,7 +44,7 @@ jobs:
       - name: Strip dynamic endpoints (static-only host)
         # GitHub Pages is static; anything with `prerender = false` must go.
         run: |
-          rm -f src/pages/api/track-price.ts src/pages/api/track-click.ts
+          rm -f src/pages/api/track-price.ts src/pages/api/track-click.ts src/pages/api/geo.ts
           rmdir --ignore-fail-on-non-empty src/pages/api || true
 
       - name: Build (Pages target)

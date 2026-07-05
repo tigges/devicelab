@@ -1,5 +1,6 @@
 import type { Device } from './schema';
 import { slugify } from '../lib/slugify';
+import { DEFAULT_REGION, rewriteAmazonUrl, type Region } from '../lib/region';
 import overridesRaw from './amazon-overrides.json' with { type: 'json' };
 
 /**
@@ -7,6 +8,9 @@ import overridesRaw from './amazon-overrides.json' with { type: 'json' };
  * affiliate URL Amazon serves), so it's fine to keep in the repo.
  * Applied to search URLs so *every* device generates commissionable
  * traffic even before we have a per-device short link.
+ *
+ * Non-UK regions have their own tags in `src/lib/region.ts`; the
+ * `amazonUrl(d, region)` overload switches domain + tag together.
  */
 const AMAZON_UK_TAG = 'gtaviai-21';
 
@@ -35,14 +39,24 @@ interface AmazonOverride {
 }
 const OVERRIDES = overridesRaw as unknown as Record<string, AmazonOverride>;
 
-export function amazonUrl(d: Device): string {
+/**
+ * Amazon URL for a device, optionally region-aware.
+ *
+ * Precedence:
+ *   1. Override with `amznShort` — used as-is when the region matches
+ *      it (UK default). For other regions, rewritten via `rewriteAmazonUrl`
+ *      which prefers the ASIN when we have one.
+ *   2. Override with `asin` only — `https://<region.domain>/dp/<ASIN>?tag=…`
+ *   3. Fallback — tagged search on the region's domain.
+ */
+export function amazonUrl(d: Device, region: Region = DEFAULT_REGION): string {
   const o = OVERRIDES[slugify(d)];
-  if (o?.amznShort) return o.amznShort;
+  if (o?.amznShort) return rewriteAmazonUrl(o.amznShort, region);
   if (o?.asin) {
-    return `https://www.amazon.co.uk/dp/${o.asin}?tag=${AMAZON_UK_TAG}`;
+    return `https://${region.domain}/dp/${o.asin}?tag=${region.tag}`;
   }
   const q = encodeURIComponent(`${d.brand} ${d.name}`);
-  return `https://www.amazon.co.uk/s?k=${q}&tag=${AMAZON_UK_TAG}`;
+  return `https://${region.domain}/s?k=${q}&tag=${region.tag}`;
 }
 
 /**
@@ -139,10 +153,16 @@ export interface RenderedOffer {
  * by delivered price.
  * TODO(affiliate): swap Amazon search URL for tagged ASIN deep links.
  */
-export function defaultOffers(d: Device): RenderedOffer[] {
-  const offers: RenderedOffer[] = [
-    { merchant: 'Amazon UK', merchantSlug: 'amazon-uk', url: amazonUrl(d), primary: true },
-  ];
+export function defaultOffers(
+  d: Device,
+  region: Region = DEFAULT_REGION,
+): RenderedOffer[] {
+  const offers: RenderedOffer[] = [];
+  offers.push({
+    merchant: region.label,
+    merchantSlug: region.slug,
+    url: amazonUrl(d, region),
+  });
   const brandStore = mfgUrl(d);
   if (brandStore) {
     offers.push({
@@ -151,5 +171,6 @@ export function defaultOffers(d: Device): RenderedOffer[] {
       url: brandStore,
     });
   }
+  if (offers[0]) offers[0].primary = true;
   return offers;
 }
