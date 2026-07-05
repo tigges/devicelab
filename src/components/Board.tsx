@@ -81,6 +81,33 @@ export function Board({
   const prevRanks = useRef<Record<number, number>>({});
   const [deltas, setDeltas] = useState<Record<number, number>>({});
 
+  // Cold-arrival hint: shown to first-timers only. A visitor with `?w=`
+  // or `?p=` in the URL (shared link) or the `dl-seen` localStorage
+  // flag never sees it. Initial state is `false` so SSR + hydration
+  // don't flash the hint at return visitors; the effect below promotes
+  // it to true on cold arrivals.
+  const [cold, setCold] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('w') || url.searchParams.has('p')) return;
+    try {
+      if (window.localStorage.getItem('dl-seen') === '1') return;
+    } catch {
+      /* private mode / storage blocked — treat as cold */
+    }
+    setCold(true);
+  }, []);
+  function markSeen() {
+    if (!cold) return;
+    setCold(false);
+    try {
+      window.localStorage.setItem('dl-seen', '1');
+    } catch {
+      /* noop */
+    }
+  }
+
   // Mirror weights → URL (?w=…).
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -161,7 +188,14 @@ export function Board({
     ? ranked.findIndex((r) => r.device.id === detailDevice.id) + 1
     : 0;
 
+  // Total count of active "more filters" (ecosystem + brand tri-state).
+  // Surfaced on the "More filters →" link so users can see filters
+  // are active without opening the sub-pane.
+  const moreFilterCount = brandFilterCount + (filter.eco !== 'All' ? 1 : 0);
+
   // ── mixer panels (reused in sidebar + bottom sheet) ────────────────
+  // Category lives OUTSIDE the mixer now (chip row above the board);
+  // Ecosystem lives INSIDE the more-filters pane alongside brands.
   const mixerPanel = (
     <>
       <div className="dl-sliders">
@@ -180,45 +214,8 @@ export function Board({
           </label>
         ))}
       </div>
-      <div className="dl-filter-grid">
-        <div>
-          <p className="dl-eyebrow">Category</p>
-          <div className="dl-seg">
-            {CATS.map((c) => (
-              <button
-                key={c}
-                onClick={() => setFilter((f) => ({ ...f, cat: c }))}
-                className={`dl-seg-btn ${filter.cat === c ? 'dl-seg-btn--on' : ''}`}
-              >
-                {c !== 'All' && (
-                  <CatGlyph
-                    cat={c as Category}
-                    size={15}
-                    stroke={filter.cat === c ? '#F2F3F1' : '#1A1D21'}
-                  />
-                )}
-                <span>{catLabel(c)}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-        <div>
-          <p className="dl-eyebrow">Ecosystem</p>
-          <div className="dl-seg">
-            {ECOS.map((e) => (
-              <button
-                key={e}
-                onClick={() => setFilter((f) => ({ ...f, eco: e }))}
-                className={`dl-seg-btn ${filter.eco === e ? 'dl-seg-btn--on' : ''}`}
-              >
-                <span>{ECO_ABBR[e] ?? e}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
       <button className="dl-more" onClick={() => setPane('more')} type="button">
-        More filters{brandFilterCount > 0 ? ` · ${brandFilterCount} active` : ''} →
+        More filters{moreFilterCount > 0 ? ` · ${moreFilterCount} active` : ''} →
       </button>
     </>
   );
@@ -228,6 +225,21 @@ export function Board({
       <button className="dl-back" onClick={() => setPane('mixer')} type="button">
         ← Back to mixer
       </button>
+
+      <p className="dl-eyebrow">Ecosystem</p>
+      <div className="dl-seg">
+        {ECOS.map((e) => (
+          <button
+            key={e}
+            onClick={() => setFilter((f) => ({ ...f, eco: e }))}
+            className={`dl-seg-btn ${filter.eco === e ? 'dl-seg-btn--on' : ''}`}
+            type="button"
+          >
+            <span>{ECO_ABBR[e] ?? e}</span>
+          </button>
+        ))}
+      </div>
+
       <p className="dl-eyebrow">
         Brands <span className="dl-hint">tap = only · again = exclude · again = clear</span>
       </p>
@@ -252,13 +264,15 @@ export function Board({
           );
         })}
       </div>
-      {brandFilterCount > 0 && (
+      {(brandFilterCount > 0 || filter.eco !== 'All') && (
         <button
           className="dl-clear"
-          onClick={() => setFilter((f) => ({ ...f, brand: {}, line: 'All' }))}
+          onClick={() =>
+            setFilter((f) => ({ ...f, brand: {}, line: 'All', eco: 'All' }))
+          }
           type="button"
         >
-          Clear brand filters
+          Clear ecosystem + brand filters
         </button>
       )}
     </>
@@ -269,16 +283,49 @@ export function Board({
   // ── render ─────────────────────────────────────────────────────────
   return (
     <div className="dl-root">
+      {cold && (
+        <p className="dl-cold-hint" aria-live="polite">
+          Pick a profile below — or ⚙ open the mixer to weight the leaderboard your way.
+        </p>
+      )}
+
       <div className="dl-strip" aria-label="Presets">
         {PERSONAS.map((p) => (
           <button
             key={p.id}
-            onClick={() => applyPreset(p.id)}
+            onClick={() => {
+              applyPreset(p.id);
+              markSeen();
+            }}
             className={`dl-chip ${preset === p.id ? 'dl-chip--hot' : ''}`}
             title={p.blurb}
             type="button"
           >
             {p.id}
+          </button>
+        ))}
+      </div>
+
+      <div className="dl-strip dl-strip--cats" aria-label="Category">
+        {CATS.map((c) => (
+          <button
+            key={c}
+            onClick={() => {
+              setFilter((f) => ({ ...f, cat: c }));
+              markSeen();
+            }}
+            className={`dl-chip dl-chip--cat ${filter.cat === c ? 'dl-chip--ink' : ''}`}
+            type="button"
+          >
+            {c !== 'All' && (
+              <CatGlyph
+                cat={c as Category}
+                size={14}
+                stroke={filter.cat === c ? '#F2F3F1' : '#1A1D21'}
+                strokeWidth={1.6}
+              />
+            )}
+            <span>{catLabel(c)}</span>
           </button>
         ))}
       </div>
@@ -456,6 +503,7 @@ export function Board({
         onClick={() => {
           setPane('mixer');
           setSheet('mixer');
+          markSeen();
         }}
         type="button"
       >

@@ -706,3 +706,31 @@ h3 { font-size: 1rem; }
   color: #5F6368;
   padding: 4px 2px 0;
 }
+
+/* ─── Cold-arrival hint + category chip row ───────────────────────── */
+
+.dl-cold-hint {
+  max-width: 780px;
+  margin: 10px auto 0;
+  padding: 0 16px;
+  font: 500 12px 'IBM Plex Mono', monospace;
+  color: #5F6368;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  animation: dl-fade 0.35s ease;
+}
+@media (min-width: 900px) {
+  .dl-cold-hint { padding-left: calc((100% - 1108px) / 2 + 16px); }
+}
+
+.dl-strip--cats {
+  padding-top: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #E4E5E2;
+}
+.dl-chip--cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
