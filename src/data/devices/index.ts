@@ -57,16 +57,9 @@ export function deviceBySlug(slug: string): Device | undefined {
   return DEVICES.find((d) => slugify(d) === slug);
 }
 
-/**
- * URL slug derived from brand + name. Stable — used in `/device/<slug>`
- * routes and in the compact URL state.
- */
-export function slugify(d: Pick<Device, 'brand' | 'name'>): string {
-  return (`${d.brand}-${d.name}`)
-    .toLowerCase()
-    .replace(/\([^)]*\)/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+// Re-export slugify so existing callers (astro pages, DetailSheet)
+// keep working without an import churn.
+import { slugify } from '../../lib/slugify';
+export { slugify };
 
 export const BRANDS: string[] = [...new Set(DEVICES.map((d) => d.brand))];

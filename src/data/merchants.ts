@@ -1,12 +1,48 @@
 import type { Device } from './schema';
+import { slugify } from '../lib/slugify';
+import overridesRaw from './amazon-overrides.json' with { type: 'json' };
 
 /**
- * Amazon UK universal search — used as the primary retail CTA. Every
- * device gets a link because Amazon indexes almost everything.
- * TODO(affiliate): swap for tagged affiliate URLs once we have the tag.
+ * Amazon UK Associates tracking ID. Public info (visible in every
+ * affiliate URL Amazon serves), so it's fine to keep in the repo.
+ * Applied to search URLs so *every* device generates commissionable
+ * traffic even before we have a per-device short link.
  */
+const AMAZON_UK_TAG = 'gtaviai-21';
+
+/**
+ * Per-device overrides layered on top of the search-URL fallback.
+ * File format (keyed by `slugify({brand, name})`):
+ *
+ *   {
+ *     "apple-macbook-pro-14-m4-pro": {
+ *       "amznShort": "https://amzn.to/…",   // preferred — SiteStripe short link
+ *       "asin":      "B0DGHYDZXQ"           // fallback — we construct dp URL
+ *     }
+ *   }
+ *
+ * Precedence in `amazonUrl()`:
+ *   1. `amznShort` — mobile-app-safe, tag baked into the redirect
+ *   2. `asin`      — direct `/dp/<ASIN>?tag=…` link
+ *   3. search      — tagged search-URL fallback
+ *
+ * Add entries at your own pace; anything unlisted keeps working via
+ * (3). Editing the JSON is enough — no code change needed per device.
+ */
+interface AmazonOverride {
+  amznShort?: string;
+  asin?: string;
+}
+const OVERRIDES = overridesRaw as unknown as Record<string, AmazonOverride>;
+
 export function amazonUrl(d: Device): string {
-  return `https://www.amazon.co.uk/s?k=${encodeURIComponent(`${d.brand} ${d.name}`)}`;
+  const o = OVERRIDES[slugify(d)];
+  if (o?.amznShort) return o.amznShort;
+  if (o?.asin) {
+    return `https://www.amazon.co.uk/dp/${o.asin}?tag=${AMAZON_UK_TAG}`;
+  }
+  const q = encodeURIComponent(`${d.brand} ${d.name}`);
+  return `https://www.amazon.co.uk/s?k=${q}&tag=${AMAZON_UK_TAG}`;
 }
 
 /**
