@@ -52,28 +52,39 @@ h3 { font-size: 1rem; }
 }
 
 .dl-header-nav {
-  display: flex; gap: 14px; align-items: center;
+  display: flex;
+  gap: 6px;
+  align-items: center;
   overflow-x: auto;
   scrollbar-width: none;
-  padding: 2px 0 0;
+  padding: 4px 0 6px;
 }
 .dl-header-nav::-webkit-scrollbar { display: none; }
 
+/* Category tabs — matched chip shape to persona chips so the "which
+   one is selected" cue reads the same way. Active state is ink-dark
+   (not orange) so the accent colour stays semantically owned by
+   weight-related state (persona, score, top card, price-drop pill). */
 .dl-nav-cat {
-  display: inline-flex; align-items: center;
-  padding: 8px 2px 6px;
-  font: 600 12px 'IBM Plex Mono', monospace;
-  color: #5F6368;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  transition: color 0.12s ease, border-color 0.12s ease;
-}
-.dl-nav-cat:hover { color: #1A1D21; }
-.dl-nav-cat[data-active='true'] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 5px 12px;
+  border: 1.5px solid #1A1D21;
+  border-radius: 4px;
+  background: #FCFCFB;
   color: #1A1D21;
-  border-bottom-color: #FF5C00;
+  font: 600 11.5px 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+.dl-nav-cat:hover { background: #EEE; }
+.dl-nav-cat[data-active='true'] {
+  background: #1A1D21;
+  border-color: #1A1D21;
+  color: #F2F3F1;
 }
 
 .dl-nav-about {
