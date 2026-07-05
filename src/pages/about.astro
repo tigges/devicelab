@@ -4,24 +4,32 @@ import Base from '../layouts/Base.astro';
 
 <Base
   title="About — DeviceLab"
-  description="How DeviceLab scores devices, how the mixer works, and what stays deterministic."
+  description="DeviceLab ranks laptops, tablets and desktop PCs on six axes with weights you set yourself. No sponsored order, deterministic scoring."
 >
   <section class="dl-page-header">
     <div class="dl-eyebrow-hero">DEVICELAB / ABOUT</div>
-    <h1>How the lab works</h1>
+    <h1>The device leaderboard <br />you can weigh yourself.</h1>
     <p class="dl-blurb">
-      DeviceLab is a small, opinionated device ranker. We score every device
-      on six axes and let you weight them yourself. This page is the
-      contract for how that works.
+      No sponsored order. Six axes, deterministic scoring, and a mixer that
+      recomputes the board instantly.
     </p>
   </section>
 
   <section class="dl-container" style="padding: 12px 16px 40px; max-width: 68ch;">
+    <p style="color: #2C2C2C; margin: 8px 0 24px;">
+      DeviceLab is a small, opinionated device ranker. We score every device
+      on six axes and let you weight them yourself. This page is the
+      contract for how that works.
+    </p>
+
     <h2>Scoring</h2>
     <ul>
       <li>Six axes: performance, portability, display, battery, build, value.</li>
       <li>Each axis is 0–100.</li>
-      <li>The composite is a normalised weighted mean.</li>
+      <li>The composite is a normalised weighted mean of your weights ×
+        the device's axis scores.</li>
+      <li>Value is derived from performance-per-£ min-max normalised across
+        the whole catalogue — not editorial.</li>
       <li>Ties break on <span class="mono">value</span>, then alphabetically.</li>
       <li>
         <strong>Nothing about the ranking depends on price feeds, affiliate
@@ -31,11 +39,21 @@ import Base from '../layouts/Base.astro';
       </li>
     </ul>
 
-    <h2>Presets</h2>
+    <h2>Personas</h2>
     <p>
-      Presets are named weight vectors mapped to a URL like <span class="mono">/best-laptops-for-students</span>.
-      Each one prewires the mixer to what a specific persona typically cares
-      about — you can still slide any axis to override it.
+      Six personas — Overall / Value / Creator / Gamer / Student / Business —
+      are named weight vectors that prewire the mixer to what a specific
+      shopper typically cares about. You can still slide any axis to override
+      one; the moment you do, the persona flips to "Custom".
+    </p>
+
+    <h2>Retail links + commission</h2>
+    <p>
+      Buy buttons link to Amazon UK and (where available) the manufacturer's
+      own store. Some of those links may earn us a commission — <strong>they
+      never affect scores or ranking</strong>. Offers are sorted by delivered
+      price only. Outbound clicks are logged so we can see which retailers
+      actually convert and prioritise partnerships accordingly.
     </p>
 
     <h2>Price tracking</h2>
@@ -47,12 +65,12 @@ import Base from '../layouts/Base.astro';
     </p>
 
     <h2>Roadmap markers in the code</h2>
-    <p>
-      Two integration points are stubbed and marked in the codebase:
-    </p>
+    <p>Four integration points are stubbed and marked in the codebase:</p>
     <ul class="mono" style="font-size: 13px;">
-      <li>TODO(ingestion) — where the n8n price job writes offers + priceHistory.</li>
-      <li>TODO(affiliate) — where merchant deep links get tracking params appended.</li>
+      <li>TODO(ingestion) — where the n8n price job writes offers + real priceHistory.</li>
+      <li>TODO(affiliate) — where merchant links get GTIN-matched deep links + tracking params.</li>
+      <li>TODO(alerts) — the scheduled consumer that emails matches on target prices.</li>
+      <li>TODO(analytics) — swap CLICK_KV for Cloudflare Analytics Engine for SQL-shaped querying.</li>
     </ul>
   </section>
 </Base>
