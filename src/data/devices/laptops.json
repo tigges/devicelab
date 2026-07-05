@@ -63,5 +63,16 @@
 
   { "name": "MateBook X Pro",  "brand": "Huawei", "line": "MateBook", "eco": "Windows", "cat": "Laptop", "price": 1599, "drop": 200, "perf": 76, "port": 94, "disp": 92, "batt": 84, "build": 88 },
 
-  { "name": "Framework Laptop 13", "brand": "Framework", "line": "Framework Laptop 13", "eco": "Windows", "cat": "Laptop", "price": 1049, "drop": 0, "perf": 70, "port": 86, "disp": 78, "batt": 74, "build": 88 }
+  { "name": "Framework Laptop 13", "brand": "Framework", "line": "Framework Laptop 13", "eco": "Windows", "cat": "Laptop", "price": 1049, "drop": 0, "perf": 70, "port": 86, "disp": 78, "batt": 74, "build": 88 },
+  { "name": "Framework Laptop 16",       "brand": "Framework", "line": "Framework Laptop 16", "eco": "Windows",  "cat": "Laptop", "price": 1599, "drop": 0,   "perf": 82, "port": 60, "disp": 78, "batt": 68, "build": 82 },
+
+  { "name": "MacBook Air 15 (M5)",       "brand": "Apple",     "line": "MacBook Air", "eco": "Apple",   "cat": "Laptop", "price": 1349, "drop": 100, "perf": 80, "port": 88, "disp": 86, "batt": 92, "build": 90 },
+
+  { "name": "Surface Laptop Studio 3",   "brand": "Microsoft", "line": "Surface Laptop Studio", "eco": "Windows", "cat": "Laptop", "price": 2069, "drop": 200, "perf": 88, "port": 60, "disp": 92, "batt": 68, "build": 88 },
+
+  { "name": "Spectre x360 14",           "brand": "HP",        "line": "Spectre",     "eco": "Windows", "cat": "Laptop", "price": 1399, "drop": 150, "perf": 72, "port": 84, "disp": 88, "batt": 82, "build": 88 },
+
+  { "name": "Alienware x16 R2",          "brand": "Dell",      "line": "Alienware",   "eco": "Windows", "cat": "Laptop", "price": 2799, "drop": 300, "perf": 96, "port": 40, "disp": 92, "batt": 42, "build": 82 },
+
+  { "name": "Chromebook Plus 15",        "brand": "HP",        "line": "Chromebook",  "eco": "ChromeOS","cat": "Laptop", "price": 449,  "drop": 50,  "perf": 52, "port": 66, "disp": 72, "batt": 90, "build": 66 }
 ]

@@ -8,5 +8,9 @@
   { "name": "Surface Pro 11",          "brand": "Microsoft","line": "Surface Pro","eco": "Windows","cat": "Tablet", "price": 999, "drop": 100, "perf": 70, "port": 92, "disp": 84, "batt": 78, "build": 84 },
   { "name": "MatePad Pro 13.2",        "brand": "Huawei", "line": "MatePad",  "eco": "Android", "cat": "Tablet", "price": 899,  "drop": 100, "perf": 68, "port": 92, "disp": 92, "batt": 80, "build": 84 },
   { "name": "Xiaomi Pad 7 Pro",        "brand": "Xiaomi", "line": "Xiaomi Pad","eco": "Android","cat": "Tablet", "price": 449,  "drop": 50,  "perf": 66, "port": 92, "disp": 84, "batt": 82, "build": 76 },
-  { "name": "Pixel Tablet",            "brand": "Google", "line": "Pixel Tablet","eco": "Android","cat": "Tablet", "price": 399,"drop": 50,  "perf": 56, "port": 90, "disp": 76, "batt": 80, "build": 74 }
+  { "name": "Pixel Tablet",            "brand": "Google", "line": "Pixel Tablet","eco": "Android","cat": "Tablet", "price": 399,"drop": 50,  "perf": 56, "port": 90, "disp": 76, "batt": 80, "build": 74 },
+  { "name": "iPad Air 13 (M3)",        "brand": "Apple",  "line": "iPad",       "eco": "Apple",   "cat": "Tablet", "price": 799,  "drop": 50,  "perf": 78, "port": 90, "disp": 84, "batt": 86, "build": 90 },
+  { "name": "iPad mini 7 (A17 Pro)",   "brand": "Apple",  "line": "iPad",       "eco": "Apple",   "cat": "Tablet", "price": 499,  "drop": 0,   "perf": 74, "port": 98, "disp": 80, "batt": 84, "build": 88 },
+  { "name": "Fire Max 11",             "brand": "Amazon", "line": "Fire",       "eco": "Android", "cat": "Tablet", "price": 249,  "drop": 30,  "perf": 44, "port": 84, "disp": 68, "batt": 82, "build": 66 }
 ]
+

@@ -3,5 +3,6 @@
   { "name": "Mac mini (M4)",      "brand": "Apple",  "line": "Mac",    "eco": "Apple",   "cat": "Desktop", "price": 599,  "drop": 50,  "perf": 82, "port": 40, "disp": 0, "batt": 0, "build": 90 },
   { "name": "Mac Studio (M4 Max)","brand": "Apple",  "line": "Mac",    "eco": "Apple",   "cat": "Desktop", "price": 1999, "drop": 100, "perf": 96, "port": 30, "disp": 0, "batt": 0, "build": 92 },
   { "name": "Omen 35L",           "brand": "HP",     "line": "Omen",   "eco": "Windows", "cat": "Desktop", "price": 1599, "drop": 200, "perf": 90, "port": 12, "disp": 0, "batt": 0, "build": 76 },
-  { "name": "NZXT Player Three",  "brand": "NZXT",   "line": "Player", "eco": "Windows", "cat": "Desktop", "price": 2399, "drop": 200, "perf": 98, "port": 10, "disp": 0, "batt": 0, "build": 82 }
+  { "name": "NZXT Player Three",  "brand": "NZXT",   "line": "Player", "eco": "Windows", "cat": "Desktop", "price": 2399, "drop": 200, "perf": 98, "port": 10, "disp": 0, "batt": 0, "build": 82 },
+  { "name": "iMac 24 (M4)",       "brand": "Apple",  "line": "Mac",    "eco": "Apple",   "cat": "Desktop", "price": 1299, "drop": 50,  "perf": 82, "port": 20, "disp": 90, "batt": 0, "build": 92 }
 ]

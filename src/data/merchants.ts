@@ -111,6 +111,7 @@ export const BRAND_COLORS: Record<string, string> = {
   Xiaomi: '#EF6C00',
   Google: '#4285F4',
   Framework: '#00897B',
+  Amazon: '#FF9900',
 };
 
 export const COMPARE_COLORS = ['#FF5C00', '#1D4ED8', '#0F9D58'];

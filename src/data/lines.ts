@@ -31,10 +31,12 @@ export const LINES: Record<string, Record<string, LineMeta>> = {
     'Dell Pro': { desc: 'Business line: manageability, security and durability for work.', preset: 'Business' },
   },
   HP: {
-    OmniBook:  { desc: 'Premium consumer AI laptops: thin, long battery life.', preset: 'Student' },
-    EliteBook: { desc: 'Business-grade: security, durability and enterprise features.', preset: 'Business' },
-    Omen:      { desc: 'Gaming: high-refresh displays and desktop-class GPUs.', preset: 'Gamer' },
-    Victus:    { desc: 'Budget gaming: entry GPUs at accessible prices.', preset: 'Value' },
+    OmniBook:   { desc: 'Premium consumer AI laptops: thin, long battery life.', preset: 'Student' },
+    EliteBook:  { desc: 'Business-grade: security, durability and enterprise features.', preset: 'Business' },
+    Omen:       { desc: 'Gaming: high-refresh displays and desktop-class GPUs.', preset: 'Gamer' },
+    Victus:     { desc: 'Budget gaming: entry GPUs at accessible prices.', preset: 'Value' },
+    Spectre:    { desc: 'Premium consumer & 2-in-1 flagship: OLED displays, machined chassis.', preset: 'Creator' },
+    Chromebook: { desc: 'ChromeOS value: long battery, secure by default, cheap to run.', preset: 'Value' },
   },
   ASUS: {
     Zenbook:  { desc: 'Premium ultraportable: OLED displays in featherweight builds.', preset: 'Student' },
@@ -48,8 +50,9 @@ export const LINES: Record<string, Record<string, LineMeta>> = {
     'Galaxy Tab':  { desc: 'Android tablets from budget FE to Ultra flagships.', preset: 'Student' },
   },
   Microsoft: {
-    'Surface Laptop': { desc: 'Clean premium clamshells with class-leading battery.', preset: 'Business' },
-    'Surface Pro':    { desc: '2-in-1 tablets that replace a laptop with the keyboard on.', preset: 'Business' },
+    'Surface Laptop':        { desc: 'Clean premium clamshells with class-leading battery.', preset: 'Business' },
+    'Surface Pro':           { desc: '2-in-1 tablets that replace a laptop with the keyboard on.', preset: 'Business' },
+    'Surface Laptop Studio': { desc: 'Creator flagship with a hinged pull-forward display.', preset: 'Creator' },
   },
   Acer: {
     Swift:      { desc: 'Thin premium AI laptops: light builds, long battery.', preset: 'Student' },
@@ -73,5 +76,12 @@ export const LINES: Record<string, Record<string, LineMeta>> = {
   Huawei: {
     MateBook: { desc: 'Premium ultraportables with standout displays.', preset: 'Business' },
     MatePad:  { desc: 'Tablets with strong displays and stylus support.', preset: 'Creator' },
+  },
+  Framework: {
+    'Framework Laptop 13': { desc: 'Small repairable laptop: socketed everything, modular ports.', preset: 'Business' },
+    'Framework Laptop 16': { desc: 'Larger repairable laptop with a modular expansion bay for a GPU or storage.', preset: 'Creator' },
+  },
+  Amazon: {
+    Fire: { desc: 'Budget Android tablets locked to the Amazon services ecosystem.', preset: 'Value' },
   },
 };
