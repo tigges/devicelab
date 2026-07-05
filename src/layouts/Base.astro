@@ -19,6 +19,22 @@ const {
 
 const canonicalHref = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
 const totalDevices = DEVICES.length;
+
+// Category tabs live in the site header now (nav-class taxonomy, not a
+// filter chip). The `key` is what gets written to `?cat=` and consumed
+// by the Board island; the label is what the user sees.
+const CATS = [
+  { key: 'All', label: 'All' },
+  { key: 'Laptop', label: 'Laptop' },
+  { key: 'Tablet', label: 'Tablet' },
+  { key: 'Desktop', label: 'PC' },
+];
+
+// href for a category link. From the homepage this becomes a soft-nav
+// (intercepted below); from any other page it's a real link back to
+// `/` with the `?cat=` seed.
+const catHref = (key: string) =>
+  key === 'All' ? href('/') : href(`/?cat=${encodeURIComponent(key)}`);
 ---
 
 <!doctype html>
@@ -46,19 +62,71 @@ const totalDevices = DEVICES.length;
   </head>
   <body>
     <header class="dl-site-header">
-      <a class="dl-logo" href={href('/')}>DEVICE<span class="accent">LAB</span></a>
-      <nav class="dl-nav">
-        <a href={href('/')}>Board</a>
-        <a href={href('/about')}>About</a>
+      <div class="dl-header-top">
+        <a class="dl-logo" href={href('/')}>DEVICE<span class="accent">LAB</span></a>
+        <span class="dl-tagline">{totalDevices} ranked · live scores</span>
+      </div>
+      <nav class="dl-header-nav" aria-label="Category">
+        {CATS.map((c) => (
+          <a class="dl-nav-cat" data-cat={c.key} href={catHref(c.key)}>
+            {c.label}
+          </a>
+        ))}
+        <a class="dl-nav-about" href={href('/about')}>About</a>
       </nav>
-      <span class="dl-tagline">{totalDevices} ranked · live scores</span>
     </header>
     <main>
       <slot />
     </main>
     <footer class="dl-site-footer">
       <span>© DeviceLab · Deterministic scoring · Independent</span>
-      <span>v0.3 · prototype port</span>
+      <span>v0.4 · prototype port</span>
     </footer>
+
+    <script is:inline>
+      // Header category tabs — active-state sync + soft-nav on the
+      // homepage. Runs once per page load; the Board island dispatches
+      // `dl-cat-change` when it mutates category so this stays in sync
+      // without a full-blown state broker.
+      (() => {
+        const tabs = document.querySelectorAll('.dl-nav-cat');
+        if (!tabs.length) return;
+
+        function currentCat() {
+          const params = new URLSearchParams(location.search);
+          return params.get('cat') || 'All';
+        }
+
+        function paint() {
+          const cat = currentCat();
+          tabs.forEach((el) => {
+            el.setAttribute('data-active', el.dataset.cat === cat ? 'true' : 'false');
+          });
+        }
+        paint();
+
+        // Only intercept clicks on the page that hosts the Board — the
+        // presence of `.dl-root` is the cheap, deployment-agnostic
+        // marker (no need to know the base path).
+        function isBoardPage() {
+          return !!document.querySelector('.dl-root');
+        }
+        tabs.forEach((el) => {
+          el.addEventListener('click', (e) => {
+            if (!isBoardPage()) return;
+            e.preventDefault();
+            const cat = el.dataset.cat || 'All';
+            const url = new URL(location.href);
+            if (cat === 'All') url.searchParams.delete('cat');
+            else url.searchParams.set('cat', cat);
+            history.pushState(null, '', url.toString());
+            window.dispatchEvent(new CustomEvent('dl-cat-change', { detail: { cat } }));
+          });
+        });
+
+        window.addEventListener('popstate', paint);
+        window.addEventListener('dl-cat-change', paint);
+      })();
+    </script>
   </body>
 </html>

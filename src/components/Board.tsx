@@ -28,16 +28,16 @@ import { DetailSheet } from './DetailSheet';
 import { CompareSheet } from './CompareSheet';
 import { BRANDS } from '../data/devices';
 
-const CATS: (Category | 'All')[] = ['All', 'Laptop', 'Tablet', 'Desktop'];
 const ECOS: (Ecosystem | 'All')[] = ['All', 'Apple', 'Windows', 'Android', 'ChromeOS'];
+
+/** Categories accepted from the `?cat=` URL parameter. */
+const VALID_CATS: (Category | 'All')[] = ['All', 'Laptop', 'Tablet', 'Desktop'];
 
 const ECO_ABBR: Record<string, string> = {
   Windows: 'Win',
   ChromeOS: 'Chrome',
   Android: 'Andr.',
 };
-
-const catLabel = (c: Category | 'All') => (c === 'Desktop' ? 'PC' : c);
 
 export interface BoardProps {
   devices: Device[];
@@ -108,7 +108,32 @@ export function Board({
     }
   }
 
-  // Mirror weights → URL (?w=…).
+  // Seed category from `?cat=` on mount — links from the site header
+  // (or a shared URL) drop us here already scoped. Runs once.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('cat');
+    if (cat && (VALID_CATS as string[]).includes(cat) && cat !== filter.cat) {
+      setFilter((f) => ({ ...f, cat: cat as Category | 'All' }));
+    }
+    // Header dispatches `dl-cat-change` when a category tab is clicked
+    // on the homepage — bind it in.
+    function onCatChange(e: Event) {
+      const detail = (e as CustomEvent).detail as { cat?: string } | undefined;
+      const next = detail?.cat;
+      if (next && (VALID_CATS as string[]).includes(next)) {
+        setFilter((f) => ({ ...f, cat: next as Category | 'All' }));
+        markSeen();
+      }
+    }
+    window.addEventListener('dl-cat-change', onCatChange);
+    return () => window.removeEventListener('dl-cat-change', onCatChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Mirror weights + preset + category → URL. Header script reads
+  // `?cat=` on popstate to keep the nav tab active state in sync.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const compact = AXES.filter((a) => weights[a] !== 60)
@@ -119,8 +144,13 @@ export function Board({
     else url.searchParams.delete('w');
     if (preset) url.searchParams.set('p', preset);
     else url.searchParams.delete('p');
+    if (filter.cat === 'All') url.searchParams.delete('cat');
+    else url.searchParams.set('cat', filter.cat);
     window.history.replaceState(null, '', url.toString());
-  }, [weights, preset]);
+    // Tell the header nav to repaint (case: category changed from
+    // within the Board — e.g. via a hypothetical future control).
+    window.dispatchEvent(new Event('dl-cat-change'));
+  }, [weights, preset, filter.cat]);
 
   const inc = includedBrands(filter.brand);
   const exc = excludedBrands(filter.brand);
@@ -302,30 +332,6 @@ export function Board({
             type="button"
           >
             {p.id}
-          </button>
-        ))}
-      </div>
-
-      <div className="dl-strip dl-strip--cats" aria-label="Category">
-        {CATS.map((c) => (
-          <button
-            key={c}
-            onClick={() => {
-              setFilter((f) => ({ ...f, cat: c }));
-              markSeen();
-            }}
-            className={`dl-chip dl-chip--cat ${filter.cat === c ? 'dl-chip--ink' : ''}`}
-            type="button"
-          >
-            {c !== 'All' && (
-              <CatGlyph
-                cat={c as Category}
-                size={14}
-                stroke={filter.cat === c ? '#F2F3F1' : '#1A1D21'}
-                strokeWidth={1.6}
-              />
-            )}
-            <span>{catLabel(c)}</span>
           </button>
         ))}
       </div>
