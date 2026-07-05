@@ -2,6 +2,7 @@ import type { Device } from './schema';
 import { slugify } from '../lib/slugify';
 import { DEFAULT_REGION, rewriteAmazonUrl, type Region } from '../lib/region';
 import overridesRaw from './amazon-overrides.json' with { type: 'json' };
+import mfgOverridesRaw from './mfg-overrides.json' with { type: 'json' };
 
 /**
  * Amazon UK Associates tracking ID. Public info (visible in every
@@ -83,18 +84,34 @@ const MFG_SEARCH: Record<string, (q: string) => string> = {
   NZXT:      (q) => `https://nzxt.com/en-GB/search?q=${encodeURIComponent(q)}`,
 };
 
-/** Direct URLs for brands with tiny catalogues where search adds noise. */
-const MFG_DIRECT: Record<string, Record<string, string>> = {
-  Framework: { 'Framework Laptop 13': 'https://frame.work/gb/en/laptop13' },
-};
+/**
+ * Per-device direct manufacturer product URLs, keyed by device slug.
+ * Same pattern as `amazon-overrides.json`. Add entries at your own
+ * pace — devices without an entry fall back to a brand-level search URL.
+ *
+ * TODO(affiliate): once we're approved on Awin (or equivalent), wrap
+ * the outbound URL with the affiliate redirector, e.g.:
+ *   https://www.awin1.com/cread.php?awinmid=<mid>&awinaffid=<aff>&p=<encoded url>
+ * so direct manufacturer clicks generate commission the same way
+ * Amazon clicks do today.
+ */
+interface MfgOverride {
+  url: string;
+}
+const MFG_OVERRIDES = mfgOverridesRaw as unknown as Record<string, MfgOverride>;
 
 /**
  * Brand's own store URL for a device. Returns null when the brand has
  * no known endpoint (we hide the button in that case).
+ *
+ * Precedence:
+ *   1. Per-device direct URL from `mfg-overrides.json`
+ *   2. Brand-level on-site search via `MFG_SEARCH`
+ *   3. null (hide the button)
  */
 export function mfgUrl(d: Device): string | null {
-  const direct = MFG_DIRECT[d.brand]?.[d.name];
-  if (direct) return direct;
+  const override = MFG_OVERRIDES[slugify(d)];
+  if (override?.url) return override.url;
 
   // Strip generation suffixes ("(M4 Pro)", "Gen 13") — most on-site
   // search engines choke on them.
