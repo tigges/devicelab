@@ -1,6 +1,7 @@
 import type { Device } from './schema';
 import { slugify } from '../lib/slugify';
 import { DEFAULT_REGION, rewriteAmazonUrl, type Region } from '../lib/region';
+import { awinWrap } from '../lib/awin';
 import overridesRaw from './amazon-overrides.json' with { type: 'json' };
 import mfgOverridesRaw from './mfg-overrides.json' with { type: 'json' };
 
@@ -108,10 +109,17 @@ const MFG_OVERRIDES = mfgOverridesRaw as unknown as Record<string, MfgOverride>;
  *   1. Per-device direct URL from `mfg-overrides.json`
  *   2. Brand-level on-site search via `MFG_SEARCH`
  *   3. null (hide the button)
+ *
+ * Both direct and search URLs are passed through `awinWrap()`, which
+ * turns them into commissionable Awin redirects when the brand has a
+ * merchant ID registered in `src/lib/awin.ts`. Brands without a
+ * merchant ID pass through unwrapped (functional URL, zero commission).
+ * A URL that's already Awin-wrapped in the overrides file is left alone.
  */
 export function mfgUrl(d: Device): string | null {
-  const override = MFG_OVERRIDES[slugify(d)];
-  if (override?.url) return override.url;
+  const slug = slugify(d);
+  const override = MFG_OVERRIDES[slug];
+  if (override?.url) return awinWrap(override.url, d.brand, slug);
 
   // Strip generation suffixes ("(M4 Pro)", "Gen 13") — most on-site
   // search engines choke on them.
@@ -121,7 +129,9 @@ export function mfgUrl(d: Device): string | null {
     .trim();
 
   const fn = MFG_SEARCH[d.brand];
-  return fn ? fn(q) : null;
+  const searchUrl = fn ? fn(q) : null;
+  if (!searchUrl) return null;
+  return awinWrap(searchUrl, d.brand, slug);
 }
 
 /** Brand-tinted meta text on cards + detail hero. */
